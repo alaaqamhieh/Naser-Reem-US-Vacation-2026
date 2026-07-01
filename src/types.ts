@@ -23,6 +23,10 @@ export interface ActivityIdea {
   easyPace?: boolean
   /** An especially meaningful "first time in America" moment for Naser. */
   firstVisitHighlight?: boolean
+  /** Rough drive time from Richmond, e.g. "~4.5h drive". */
+  driveTime?: string
+  /** Beyond the usual ~5h radius — a "worth it" stretch, shown honestly. */
+  stretchTrip?: boolean
 }
 
 export interface CalendarEntry {
@@ -41,4 +45,6 @@ export interface CalendarEntry {
 export interface AppState {
   activities: ActivityIdea[]
   entries: CalendarEntry[]
+  /** Activity ids Naser & Reem hearted in the swipe deck, in the order added. */
+  shortlist: string[]
 }

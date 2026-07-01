@@ -46,6 +46,7 @@ export function Calendar({
       <p className="section-hint">
         Drag an idea from below onto any day — or tap a day's <strong>+</strong> to pick one.
       </p>
+      <p className="calendar-swipe-hint" aria-hidden="true">👉 Swipe sideways to see the whole week</p>
       {months.map((group) => {
         const firstWeekday = weekdayOf(group.dates[0])
         const leadingBlanks = Array.from({ length: firstWeekday })

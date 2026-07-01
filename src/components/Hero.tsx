@@ -18,6 +18,7 @@ export function Hero({
   tripEnd,
   today,
   onExportAll,
+  onOpenDeck,
 }: {
   dadName: string
   momName: string
@@ -25,6 +26,7 @@ export function Hero({
   tripEnd: string
   today: string
   onExportAll: () => void
+  onOpenDeck: () => void
 }) {
   return (
     <header className="hero">
@@ -42,7 +44,10 @@ export function Hero({
         This is your trip too, so make it yours.
       </p>
       <div className="hero__actions">
-        <a href="#calendar" className="primary-btn">
+        <button type="button" className="primary-btn" onClick={onOpenDeck}>
+          💕 Play the Idea Deck
+        </button>
+        <a href="#calendar" className="secondary-btn">
           See the Calendar
         </a>
         <a href="#ideas" className="secondary-btn">

@@ -4,7 +4,7 @@
 //  and persists to localStorage via storage.ts.
 // =============================================================================
 
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { JORDAN_TRIP_END, JORDAN_TRIP_START, TRIP_END, TRIP_START, WELCOME_NAMES } from './data'
 import { loadState, saveState } from './storage'
 import { buildItineraryIcs, buildSingleEventIcs, downloadIcs } from './ics'
@@ -15,6 +15,9 @@ import { Library } from './components/Library'
 import { DatePickerModal } from './components/DatePickerModal'
 import { ActivityPickerModal } from './components/ActivityPickerModal'
 import { ActivityFormModal } from './components/ActivityFormModal'
+import { SwipeDeck } from './components/SwipeDeck'
+import { ShortlistSection } from './components/ShortlistSection'
+import { QuickNav } from './components/QuickNav'
 
 function newId(prefix: string): string {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`
@@ -34,6 +37,8 @@ export default function App() {
   const [pendingScheduleActivityId, setPendingScheduleActivityId] = useState<string | null>(null)
   const [pendingScheduleDate, setPendingScheduleDate] = useState<string | null>(null)
   const [activityFormMode, setActivityFormMode] = useState<'closed' | 'create' | string>('closed')
+  // The swipe deck is a full-screen mode, separate from the modals above.
+  const [deckOpen, setDeckOpen] = useState(false)
 
   const updateState = useCallback((updater: (prev: AppState) => AppState) => {
     setState((prev) => {
@@ -92,10 +97,37 @@ export default function App() {
       updateState((prev) => ({
         activities: prev.activities.filter((a) => a.id !== id),
         entries: prev.entries.filter((e) => e.activityId !== id),
+        shortlist: prev.shortlist.filter((sid) => sid !== id),
       }))
     },
     [updateState],
   )
+
+  const toggleShortlist = useCallback(
+    (activityId: string) => {
+      updateState((prev) => ({
+        ...prev,
+        shortlist: prev.shortlist.includes(activityId)
+          ? prev.shortlist.filter((id) => id !== activityId)
+          : [...prev.shortlist, activityId],
+      }))
+    },
+    [updateState],
+  )
+
+  const scheduledIds = useMemo(() => new Set(state.entries.map((e) => e.activityId)), [state.entries])
+
+  // Deck candidates: ideas not yet hearted and not already on the calendar,
+  // so the deck stays a pure discovery tool.
+  const deckCandidates = useMemo(() => {
+    const hearted = new Set(state.shortlist)
+    return state.activities.filter((a) => !scheduledIds.has(a.id) && !hearted.has(a.id))
+  }, [state.activities, scheduledIds, state.shortlist])
+
+  const goToShortlist = () => {
+    setDeckOpen(false)
+    requestAnimationFrame(() => document.getElementById('shortlist')?.scrollIntoView({ behavior: 'smooth' }))
+  }
 
   // ----- Library card chosen: drop on a day schedules directly, plain tap opens the date picker -----
   const handleSchedule = (activityId: string, dropZone: string | null) => {
@@ -137,6 +169,7 @@ export default function App() {
         tripEnd={TRIP_END}
         today={todayIso()}
         onExportAll={handleExportAll}
+        onOpenDeck={() => setDeckOpen(true)}
       />
 
       <Calendar
@@ -153,19 +186,34 @@ export default function App() {
         today={todayIso()}
       />
 
+      <ShortlistSection
+        shortlist={state.shortlist}
+        activities={state.activities}
+        scheduledIds={scheduledIds}
+        onPickDay={(id) => setPendingScheduleActivityId(id)}
+        onUnheart={toggleShortlist}
+        onOpenDeck={() => setDeckOpen(true)}
+      />
+
       <Library
         activities={state.activities}
+        shortlist={state.shortlist}
+        onToggleShortlist={toggleShortlist}
         onSchedule={handleSchedule}
         onCreateNew={() => setActivityFormMode('create')}
         onEdit={(id) => setActivityFormMode(id)}
         onDelete={deleteActivity}
       />
 
+      <QuickNav onOpenDeck={() => setDeckOpen(true)} />
+
       {pendingScheduleActivityId && (
         <DatePickerModal
           tripStart={TRIP_START}
           tripEnd={TRIP_END}
           title={`Add "${state.activities.find((a) => a.id === pendingScheduleActivityId)?.title ?? ''}"`}
+          entries={state.entries}
+          today={todayIso()}
           onPick={handleDatePicked}
           onClose={() => setPendingScheduleActivityId(null)}
         />
@@ -197,6 +245,16 @@ export default function App() {
                 }
               : undefined
           }
+        />
+      )}
+
+      {deckOpen && (
+        <SwipeDeck
+          candidates={deckCandidates}
+          heartedTotal={state.shortlist.length}
+          onHeart={toggleShortlist}
+          onClose={() => setDeckOpen(false)}
+          onGoToShortlist={goToShortlist}
         />
       )}
     </div>

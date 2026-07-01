@@ -14,17 +14,22 @@ const CATEGORIES: { key: ActivityCategory; label: string }[] = [
 
 export function Library({
   activities,
+  shortlist,
+  onToggleShortlist,
   onSchedule,
   onCreateNew,
   onEdit,
   onDelete,
 }: {
   activities: ActivityIdea[]
+  shortlist: string[]
+  onToggleShortlist: (activityId: string) => void
   onSchedule: (activityId: string, dropZone: string | null) => void
   onCreateNew: () => void
   onEdit: (activityId: string) => void
   onDelete: (activityId: string) => void
 }) {
+  const shortlisted = new Set(shortlist)
   const [active, setActive] = useState<ActivityCategory | 'all'>('all')
   const { query, setQuery, filtered } = useActivitySearch(activities)
 
@@ -86,6 +91,8 @@ export function Library({
                 onChoose={(zone) => onSchedule(a.id, zone)}
                 onEdit={a.isCustom ? () => onEdit(a.id) : undefined}
                 onDelete={a.isCustom ? () => onDelete(a.id) : undefined}
+                isShortlisted={shortlisted.has(a.id)}
+                onToggleShortlist={() => onToggleShortlist(a.id)}
               />
             ))}
           </div>

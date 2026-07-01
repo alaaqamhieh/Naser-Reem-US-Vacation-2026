@@ -151,7 +151,7 @@ a {
 .text-btn {
   background: none;
   color: var(--ink-soft);
-  padding: 8px 10px;
+  padding: 10px 12px;
   font-weight: 500;
 }
 .text-btn:hover {
@@ -165,12 +165,12 @@ a {
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: 999px;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
+  font-size: 14px;
   padding: 0;
 }
 
@@ -318,10 +318,10 @@ a {
   background: var(--bg-soft);
   border: 1px dashed var(--line);
   border-radius: 999px;
-  width: 22px;
-  height: 22px;
+  width: 30px;
+  height: 30px;
   line-height: 1;
-  font-size: 14px;
+  font-size: 16px;
   color: var(--ink-soft);
   padding: 0;
 }
@@ -373,10 +373,11 @@ a {
 .chip__done {
   background: none;
   border: none;
-  padding: 2px 0 2px 5px;
-  font-size: 11px;
+  padding: 6px 2px 6px 6px;
+  font-size: 13px;
   line-height: 1;
   color: var(--ink-soft);
+  min-width: 26px;
 }
 .chip__title {
   overflow: hidden;
@@ -421,8 +422,8 @@ a {
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: 6px;
-  font-size: 11px;
-  padding: 3px 6px;
+  font-size: 12px;
+  padding: 8px 6px;
   flex: 1;
 }
 .chip__action--confirm,
@@ -441,7 +442,7 @@ a {
   border: 1.5px solid var(--line);
   border-radius: 10px;
   padding: 10px 14px;
-  font-size: 15px;
+  font-size: 16px; /* >=16px so iOS Safari doesn't zoom on focus */
   color: var(--ink);
   background: var(--bg-soft);
   margin-bottom: 16px;
@@ -560,6 +561,19 @@ a {
   background: var(--gold-soft);
   color: #8a621c;
 }
+.activity-card__badge--stretch {
+  background: #f6e3dc;
+  color: #a04e2e;
+}
+.activity-card__drive {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+.activity-card__heart--on {
+  border-color: var(--cat-event);
+  background: #fdeef2;
+}
 .activity-card__category {
   margin-top: auto;
   font-size: 11px;
@@ -568,7 +582,7 @@ a {
   color: var(--ink-soft);
   font-weight: 700;
 }
-.activity-card__custom-actions {
+.activity-card__corner-actions {
   position: absolute;
   top: 8px;
   right: 8px;
@@ -642,24 +656,62 @@ a {
   flex-wrap: wrap;
 }
 
+.date-grid-months {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 52vh;
+  overflow-y: auto;
+}
+.date-grid__month-label {
+  font-size: 16px;
+  color: var(--accent-deep);
+  margin-bottom: 8px;
+}
 .date-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(58px, 1fr));
   gap: 8px;
-  max-height: 50vh;
-  overflow-y: auto;
 }
 .date-grid__item {
   border: 1px solid var(--line);
   background: var(--bg-soft);
   border-radius: var(--radius-sm);
-  padding: 10px 6px;
-  font-size: 13px;
-  font-weight: 600;
+  padding: 8px 4px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  min-height: 54px;
 }
 .date-grid__item:hover {
   background: var(--accent-soft);
   border-color: var(--accent);
+}
+.date-grid__item--today {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+.date-grid__weekday {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.date-grid__daynum {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.date-grid__dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+.date-grid__dot--inline {
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .activity-picker-list {
@@ -697,7 +749,7 @@ a {
   border: 1.5px solid var(--line);
   border-radius: 10px;
   padding: 10px 12px;
-  font-size: 15px;
+  font-size: 16px; /* >=16px so iOS Safari doesn't zoom on focus */
   color: var(--ink);
   background: var(--bg-soft);
 }
@@ -708,6 +760,339 @@ a {
 }
 .form-input--textarea {
   resize: vertical;
+}
+
+
+/* =============================================================================
+   Shortlist
+============================================================================= */
+.shortlist-section {
+  scroll-margin-top: 20px;
+}
+.shortlist-empty {
+  background: var(--card);
+  border: 2px dashed var(--line);
+  border-radius: var(--radius-sm);
+  padding: 28px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  color: var(--ink-soft);
+}
+.shortlist-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.shortlist-item {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--ink-soft);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-soft);
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.shortlist-item--big-trip { border-left-color: var(--cat-big-trip); }
+.shortlist-item--garden { border-left-color: var(--cat-garden); }
+.shortlist-item--food { border-left-color: var(--cat-food); }
+.shortlist-item--home { border-left-color: var(--cat-home); }
+.shortlist-item--local { border-left-color: var(--cat-local); }
+.shortlist-item--event { border-left-color: var(--cat-event); }
+.shortlist-item__emoji {
+  font-size: 26px;
+}
+.shortlist-item__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.shortlist-item__title {
+  font-weight: 700;
+  font-size: 15.5px;
+}
+.shortlist-item__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+.shortlist-item__scheduled {
+  color: var(--accent-deep);
+}
+.shortlist-item__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.shortlist-item__pick {
+  padding: 9px 16px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.shortlist-item__unheart {
+  background: none;
+  border: none;
+  font-size: 17px;
+  padding: 8px;
+  border-radius: 999px;
+}
+.shortlist-item__unheart:hover {
+  background: var(--bg-soft);
+}
+
+/* =============================================================================
+   Swipe deck (full-screen idea deck)
+============================================================================= */
+.deck-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--bg);
+  background-image: radial-gradient(circle at 15% 0%, var(--sky-soft) 0%, transparent 45%),
+    radial-gradient(circle at 100% 20%, var(--gold-soft) 0%, transparent 40%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: calc(12px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom));
+  height: 100dvh;
+  animation: fade-in 0.2s ease both;
+}
+.deck__header {
+  width: min(92vw, 400px);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.deck__progress {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.deck__progress-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+.deck__progress-track {
+  height: 5px;
+  border-radius: 999px;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.deck__progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width 0.25s ease;
+}
+.deck__close {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  width: 44px;
+  height: 44px;
+  font-size: 17px;
+  color: var(--ink-soft);
+  flex-shrink: 0;
+}
+.deck__stage {
+  position: relative;
+  width: min(92vw, 400px);
+  flex: 1;
+  min-height: 0;
+  max-height: 560px;
+}
+.swipe-card {
+  position: absolute;
+  inset: 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-top: 5px solid var(--ink-soft);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 26px 22px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: transform 0.25s ease;
+  overflow: hidden;
+}
+.swipe-card--big-trip { border-top-color: var(--cat-big-trip); }
+.swipe-card--garden { border-top-color: var(--cat-garden); }
+.swipe-card--food { border-top-color: var(--cat-food); }
+.swipe-card--home { border-top-color: var(--cat-home); }
+.swipe-card--local { border-top-color: var(--cat-local); }
+.swipe-card--event { border-top-color: var(--cat-event); }
+.swipe-card--depth-1 {
+  transform: scale(0.955) translateY(12px);
+  z-index: -1;
+}
+.swipe-card--depth-2 {
+  transform: scale(0.91) translateY(24px);
+  z-index: -2;
+}
+.swipe-card--exit-right {
+  transition: transform 0.3s ease-in, opacity 0.3s ease-in;
+  transform: translateX(120vw) rotate(20deg);
+  opacity: 0;
+}
+.swipe-card--exit-left {
+  transition: transform 0.3s ease-in, opacity 0.3s ease-in;
+  transform: translateX(-120vw) rotate(-20deg);
+  opacity: 0;
+}
+.swipe-card__stamp {
+  position: absolute;
+  top: 18px;
+  font-size: 17px;
+  font-weight: 800;
+  padding: 6px 14px;
+  border-radius: 10px;
+  border: 3px solid;
+  transform: rotate(-8deg);
+  pointer-events: none;
+  background: rgba(255, 253, 248, 0.9);
+}
+.swipe-card__stamp--yes {
+  left: 14px;
+  color: var(--accent-deep);
+  border-color: var(--accent);
+}
+.swipe-card__stamp--no {
+  right: 14px;
+  color: #a8412a;
+  border-color: #d78a76;
+  transform: rotate(8deg);
+}
+.swipe-card__emoji {
+  font-size: 54px;
+  line-height: 1;
+}
+.swipe-card__title {
+  font-size: 25px;
+  line-height: 1.2;
+}
+.swipe-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.swipe-card__drive {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+.swipe-card__desc {
+  font-size: 15px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+}
+.swipe-card__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto;
+}
+.swipe-card__category {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--ink-soft);
+  font-weight: 700;
+}
+.deck__actions {
+  display: flex;
+  gap: 26px;
+  margin-top: 18px;
+}
+.deck__btn {
+  width: 64px;
+  height: 64px;
+  border-radius: 999px;
+  font-size: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid;
+  background: var(--card);
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.15s ease;
+}
+.deck__btn:hover {
+  transform: scale(1.07);
+}
+.deck__btn--no {
+  color: #a8412a;
+  border-color: #d78a76;
+}
+.deck__btn--yes {
+  border-color: var(--accent);
+}
+.deck__hint {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  text-align: center;
+}
+.deck__done {
+  flex: 1;
+  width: min(92vw, 400px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 14px;
+}
+.deck__done-emoji {
+  font-size: 56px;
+}
+.deck__done-title {
+  font-size: 28px;
+}
+.deck__done-text {
+  color: var(--ink-soft);
+  font-size: 16px;
+  line-height: 1.6;
+}
+.deck__done-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* =============================================================================
+   Quick nav (mobile bottom bar)
+============================================================================= */
+.quick-nav {
+  display: none;
+}
+.calendar-swipe-hint {
+  display: none;
 }
 
 /* =============================================================================
@@ -741,6 +1126,16 @@ a {
     transform: scale(1) translateY(0);
   }
 }
+@keyframes sheet-up {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
   * {
@@ -754,8 +1149,18 @@ a {
 ============================================================================= */
 @media (max-width: 700px) {
   .app {
-    padding: 16px 12px 60px;
+    padding: 16px 12px calc(78px + env(safe-area-inset-bottom));
     gap: 40px;
+  }
+  /* background-attachment: fixed repaints on every scroll frame on mobile
+     and is buggy in iOS Safari — let it scroll normally there. */
+  body {
+    background-attachment: scroll;
+  }
+  /* Let a vertical touch on a library card scroll the page (DragItem already
+     handles the resulting pointercancel); horizontal drags still work. */
+  .activity-card {
+    touch-action: pan-y;
   }
   /* Below this width, 7 even columns crush chip text unreadably small —
      scroll horizontally at a readable column width instead. */
@@ -763,19 +1168,110 @@ a {
     overflow-x: auto;
     padding-bottom: 6px;
     -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+  }
+  .day-cell {
+    scroll-snap-align: start;
+  }
+  .day-cell__add {
+    width: 36px;
+    height: 36px;
   }
   .month-grid__weekdays,
   .month-grid__days {
     grid-template-columns: repeat(7, minmax(108px, 1fr));
     min-width: 680px;
   }
+  .calendar-swipe-hint {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin: -12px 0 12px;
+  }
   .card-grid {
     grid-template-columns: 1fr 1fr;
+  }
+
+  /* Modals become bottom sheets — easier one-handed reach and feels native. */
+  .modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .modal-card {
+    max-width: none;
+    width: 100%;
+    border-radius: 20px 20px 0 0;
+    max-height: 92dvh;
+    padding: 20px 18px calc(20px + env(safe-area-inset-bottom));
+    animation-name: sheet-up;
+  }
+  .modal-card::before {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--line);
+    margin: -6px auto 2px;
+  }
+  .date-grid-months {
+    max-height: 62dvh;
+  }
+  .activity-picker-list {
+    max-height: 60dvh;
+  }
+
+  /* Shortlist rows stack their actions below the text on narrow screens. */
+  .shortlist-item {
+    flex-wrap: wrap;
+  }
+  .shortlist-item__actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  /* Sticky bottom quick-nav for one-thumb section jumps. */
+  .quick-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 90;
+    display: flex;
+    padding-bottom: env(safe-area-inset-bottom);
+    background: rgba(255, 253, 248, 0.93);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid var(--line);
+  }
+  .quick-nav__item {
+    flex: 1;
+    min-height: 54px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink-soft);
+    background: none;
+    border: none;
+    text-decoration: none;
+  }
+  .quick-nav__item span {
+    font-size: 17px;
   }
 }
 
 @media (max-width: 420px) {
   .card-grid {
     grid-template-columns: 1fr;
+  }
+  .hero__actions .primary-btn,
+  .hero__actions .secondary-btn {
+    width: 100%;
+    justify-content: center;
   }
 }
