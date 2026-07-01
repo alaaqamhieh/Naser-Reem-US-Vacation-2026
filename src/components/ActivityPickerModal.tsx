@@ -1,6 +1,7 @@
 import type { ActivityIdea } from '../types'
 import { dayLabel } from '../dateUtils'
 import { useEscapeToClose } from '../useEscapeToClose'
+import { useActivitySearch } from '../useActivitySearch'
 
 export function ActivityPickerModal({
   date,
@@ -14,6 +15,7 @@ export function ActivityPickerModal({
   onClose: () => void
 }) {
   useEscapeToClose(onClose)
+  const { query, setQuery, filtered } = useActivitySearch(activities)
   return (
     <div
       className="modal-overlay"
@@ -24,8 +26,17 @@ export function ActivityPickerModal({
     >
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <h2 className="modal-card__title">Add to {dayLabel(date)}</h2>
+        <input
+          type="search"
+          className="library-search"
+          placeholder="Search ideas…"
+          aria-label="Search ideas"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
         <div className="activity-picker-list">
-          {activities.map((a) => (
+          {filtered.length === 0 && <p className="empty-state">No ideas match your search.</p>}
+          {filtered.map((a) => (
             <button key={a.id} type="button" className="activity-picker-list__item" onClick={() => onPick(a.id)}>
               <span aria-hidden="true">{a.emoji}</span> {a.title}
             </button>

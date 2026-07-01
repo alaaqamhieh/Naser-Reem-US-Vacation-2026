@@ -5,7 +5,7 @@
 // =============================================================================
 
 import { useCallback, useState } from 'react'
-import { TRIP_END, TRIP_START, WELCOME_NAMES } from './data'
+import { JORDAN_TRIP_END, JORDAN_TRIP_START, TRIP_END, TRIP_START, WELCOME_NAMES } from './data'
 import { loadState, saveState } from './storage'
 import { buildItineraryIcs, buildSingleEventIcs, downloadIcs } from './ics'
 import type { ActivityCategory, AppState, CalendarEntry } from './types'
@@ -54,6 +54,16 @@ export default function App() {
   const removeEntry = useCallback(
     (entryId: string) => {
       updateState((prev) => ({ ...prev, entries: prev.entries.filter((e) => e.id !== entryId) }))
+    },
+    [updateState],
+  )
+
+  const toggleEntryCompleted = useCallback(
+    (entryId: string) => {
+      updateState((prev) => ({
+        ...prev,
+        entries: prev.entries.map((e) => (e.id === entryId ? { ...e, completed: !e.completed } : e)),
+      }))
     },
     [updateState],
   )
@@ -125,15 +135,19 @@ export default function App() {
         momName={WELCOME_NAMES.mom}
         tripStart={TRIP_START}
         tripEnd={TRIP_END}
+        today={todayIso()}
         onExportAll={handleExportAll}
       />
 
       <Calendar
         tripStart={TRIP_START}
         tripEnd={TRIP_END}
+        hostedStart={JORDAN_TRIP_START}
+        hostedEnd={JORDAN_TRIP_END}
         entries={state.entries}
         activities={state.activities}
         onRemoveEntry={removeEntry}
+        onToggleCompleted={toggleEntryCompleted}
         onOpenPicker={(date) => setPendingScheduleDate(date)}
         onExportEntry={handleExportEntry}
         today={todayIso()}

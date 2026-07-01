@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { ActivityCategory, ActivityIdea } from '../types'
 import { useEscapeToClose } from '../useEscapeToClose'
+import { useConfirm } from '../useConfirm'
 
 const CATEGORY_OPTIONS: { key: ActivityCategory; label: string }[] = [
   { key: 'big-trip', label: 'Big Trip' },
@@ -27,6 +28,7 @@ export function ActivityFormModal({
   const [emoji, setEmoji] = useState(initial?.emoji ?? '✨')
   const [category, setCategory] = useState<ActivityCategory>(initial?.category ?? 'home')
   const [description, setDescription] = useState(initial?.description ?? '')
+  const { armed, trigger } = useConfirm(onDelete ?? (() => {}))
 
   const canSave = title.trim().length > 0
 
@@ -99,8 +101,12 @@ export function ActivityFormModal({
             Save
           </button>
           {onDelete && (
-            <button type="button" className="danger-btn" onClick={onDelete}>
-              Delete
+            <button
+              type="button"
+              className={`danger-btn ${armed ? 'danger-btn--confirm' : ''}`}
+              onClick={trigger}
+            >
+              {armed ? 'Really delete?' : 'Delete'}
             </button>
           )}
           <button type="button" className="text-btn" onClick={onClose}>

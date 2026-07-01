@@ -71,3 +71,32 @@ export function groupByMonth(dates: string[]): MonthGroup[] {
   }
   return groups
 }
+
+/** True if `date` falls within [start, end], inclusive. ISO strings sort chronologically. */
+export function isWithinRange(date: string, start: string, end: string): boolean {
+  return date >= start && date <= end
+}
+
+/** Whole days between two ISO dates (b - a), using UTC midnight to avoid DST/timezone drift. */
+export function daysBetween(a: string, b: string): number {
+  const { year: ay, month: am, day: ad } = parseIso(a)
+  const { year: by, month: bm, day: bd } = parseIso(b)
+  const msPerDay = 24 * 60 * 60 * 1000
+  return Math.round((Date.UTC(by, bm - 1, bd) - Date.UTC(ay, am - 1, ad)) / msPerDay)
+}
+
+export type TripPhase =
+  | { kind: 'before'; daysUntil: number }
+  | { kind: 'during'; dayNumber: number; totalDays: number }
+  | { kind: 'after' }
+
+/** Where `today` falls relative to the trip, for the hero's arrival countdown. */
+export function tripPhase(today: string, tripStart: string, tripEnd: string): TripPhase {
+  if (today < tripStart) return { kind: 'before', daysUntil: daysBetween(today, tripStart) }
+  if (today > tripEnd) return { kind: 'after' }
+  return {
+    kind: 'during',
+    dayNumber: daysBetween(tripStart, today) + 1,
+    totalDays: daysBetween(tripStart, tripEnd) + 1,
+  }
+}

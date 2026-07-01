@@ -1,4 +1,4 @@
-import { groupByMonth, monthLabel, tripDates, weekdayOf } from '../dateUtils'
+import { groupByMonth, isWithinRange, monthLabel, tripDates, weekdayOf } from '../dateUtils'
 import type { ActivityIdea, CalendarEntry } from '../types'
 import { DayCell } from './DayCell'
 
@@ -7,18 +7,25 @@ const WEEKDAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 export function Calendar({
   tripStart,
   tripEnd,
+  hostedStart,
+  hostedEnd,
   entries,
   activities,
   onRemoveEntry,
+  onToggleCompleted,
   onOpenPicker,
   onExportEntry,
   today,
 }: {
   tripStart: string
   tripEnd: string
+  /** Date range (inclusive) during which the brothers host while Alaa is in Jordan. */
+  hostedStart: string
+  hostedEnd: string
   entries: CalendarEntry[]
   activities: ActivityIdea[]
   onRemoveEntry: (entryId: string) => void
+  onToggleCompleted: (entryId: string) => void
   onOpenPicker: (date: string) => void
   onExportEntry: (entryId: string) => void
   today?: string
@@ -64,9 +71,11 @@ export function Calendar({
                     entries={entriesByDate.get(date) ?? []}
                     activities={activities}
                     onRemove={onRemoveEntry}
+                    onToggleCompleted={onToggleCompleted}
                     onOpenPicker={() => onOpenPicker(date)}
                     onExportEntry={onExportEntry}
                     isToday={date === today}
+                    isHosted={isWithinRange(date, hostedStart, hostedEnd)}
                   />
                 ))}
               </div>

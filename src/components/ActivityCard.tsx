@@ -36,6 +36,14 @@ export function ActivityCard({
         {activity.tags && activity.tags.length > 0 && (
           <span className="activity-card__tags">{activity.tags.join(' · ')}</span>
         )}
+        {(activity.easyPace || activity.firstVisitHighlight) && (
+          <span className="activity-card__badges">
+            {activity.easyPace && <span className="activity-card__badge activity-card__badge--easy">🌿 easy pace</span>}
+            {activity.firstVisitHighlight && (
+              <span className="activity-card__badge activity-card__badge--highlight">⭐ first-time must-see</span>
+            )}
+          </span>
+        )}
         <span className="activity-card__category">{CATEGORY_LABELS[activity.category]}</span>
       </DragItem>
       {activity.isCustom && (

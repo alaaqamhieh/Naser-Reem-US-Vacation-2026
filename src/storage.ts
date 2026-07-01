@@ -2,7 +2,7 @@ import type { AppState } from './types'
 import { SEED_ACTIVITIES, SEED_ENTRIES } from './data'
 
 const STORAGE_KEY = 'naser-reem-vacation/state'
-const STORAGE_VERSION = 1
+const STORAGE_VERSION = 2
 
 interface StoredState extends AppState {
   _v: number

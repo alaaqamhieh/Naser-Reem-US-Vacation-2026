@@ -19,6 +19,10 @@ export interface ActivityIdea {
   tags?: string[]
   /** True for ideas the family added themselves (enables edit/delete). */
   isCustom?: boolean
+  /** Gentle pace, minimal walking/standing — good for Reem's back. */
+  easyPace?: boolean
+  /** An especially meaningful "first time in America" moment for Naser. */
+  firstVisitHighlight?: boolean
 }
 
 export interface CalendarEntry {
@@ -30,6 +34,8 @@ export interface CalendarEntry {
   startTime?: string
   endTime?: string
   note?: string
+  /** Marked once the family has done/enjoyed this — a UI tracking flag only. */
+  completed?: boolean
 }
 
 export interface AppState {

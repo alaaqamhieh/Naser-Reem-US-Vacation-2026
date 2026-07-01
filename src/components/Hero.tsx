@@ -1,16 +1,29 @@
-import { dayLabel } from '../dateUtils'
+import { dayLabel, tripPhase } from '../dateUtils'
+
+function countdownText(today: string, tripStart: string, tripEnd: string): string {
+  const phase = tripPhase(today, tripStart, tripEnd)
+  if (phase.kind === 'before') {
+    return phase.daysUntil === 1 ? '1 day until arrival! 🎉' : `${phase.daysUntil} days until arrival! 🎉`
+  }
+  if (phase.kind === 'during') {
+    return `Day ${phase.dayNumber} of ${phase.totalDays} 🌿`
+  }
+  return 'Thank you for a wonderful visit — until next time! 💛'
+}
 
 export function Hero({
   dadName,
   momName,
   tripStart,
   tripEnd,
+  today,
   onExportAll,
 }: {
   dadName: string
   momName: string
   tripStart: string
   tripEnd: string
+  today: string
   onExportAll: () => void
 }) {
   return (
@@ -22,6 +35,7 @@ export function Hero({
       <p className="hero__dates">
         {dayLabel(tripStart)} – {dayLabel(tripEnd)}
       </p>
+      <p className="hero__countdown">{countdownText(today, tripStart, tripEnd)}</p>
       <p className="hero__message">
         We can't wait to have you with us. We've put together a few weeks of things to see,
         taste, and do together — drag any idea onto the calendar below, or dream up your own.

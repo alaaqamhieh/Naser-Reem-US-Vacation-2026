@@ -11,6 +11,10 @@ export const TRIP_END = '2026-08-13'
 
 export const WELCOME_NAMES = { dad: 'Naser', mom: 'Reem' }
 
+// Alaa is away in Jordan and his brothers host Naser & Reem during this window.
+export const JORDAN_TRIP_START = '2026-07-23'
+export const JORDAN_TRIP_END = '2026-08-03'
+
 // -----------------------------------------------------------------------------
 //  Activity library — the "short list" of things to do.
 // -----------------------------------------------------------------------------
@@ -40,6 +44,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     category: 'big-trip',
     description: "Step into \"old America\" — colonial trades, tall ships, and the spot where the nation began. A great overnight for Naser's first taste of US history.",
     tags: ['overnight'],
+    firstVisitHighlight: true,
   },
   {
     id: 'virginia-beach-norfolk',
@@ -62,6 +67,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     emoji: '🏞️',
     category: 'big-trip',
     description: 'Mountain overlooks, wildflowers, and easy scenic stops along a 105-mile ridge-top drive — no real hiking required.',
+    easyPace: true,
   },
   {
     id: 'longwood-gardens',
@@ -77,6 +83,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     emoji: '🏙️',
     category: 'big-trip',
     description: 'The National Mall, the monuments, and a free Smithsonian museum, then a stroll through historic Alexandria.',
+    firstVisitHighlight: true,
   },
   {
     id: 'annapolis',
@@ -84,6 +91,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     emoji: '⛵',
     category: 'big-trip',
     description: 'A pretty waterfront city with historic streets and boats — a gentler alternative to a full D.C. day.',
+    easyPace: true,
   },
   {
     id: 'natural-bridge-lexington',
@@ -100,6 +108,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     emoji: '🌺',
     category: 'garden',
     description: "Richmond's own garden, recently doubled in size — a domed conservatory, butterflies, and (on select Thursdays) evening hours with live music.",
+    easyPace: true,
   },
   {
     id: 'maymont',
@@ -107,6 +116,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     emoji: '🦢',
     category: 'garden',
     description: 'A free Richmond estate with a Japanese garden, Italian garden, and wildlife — easy, beautiful, and close to home.',
+    easyPace: true,
   },
   {
     id: 'norfolk-botanical-garden',
@@ -114,6 +124,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     emoji: '🌷',
     category: 'garden',
     description: '60+ themed gardens that pair perfectly with a Virginia Beach weekend morning.',
+    easyPace: true,
   },
   {
     id: 'us-botanic-garden',
@@ -121,6 +132,8 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     emoji: '🌴',
     category: 'garden',
     description: "The free conservatory from your first US trip — worth revisiting and showing Naser, paired with a D.C. day.",
+    easyPace: true,
+    firstVisitHighlight: true,
   },
 
   // ----- Food experiences -----
@@ -137,7 +150,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     emoji: '🥩',
     category: 'food',
     description: "A Brazilian steakhouse rodízio — tableside carved meats and a big salad bar. A true \"never had this before\" experience.",
-    tags: ['contains non-halal meat — worth checking ahead'],
+    firstVisitHighlight: true,
   },
   {
     id: 'hibachi-night',
@@ -152,6 +165,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     emoji: '🍵',
     category: 'food',
     description: 'A pretty Asian-European fusion tea & dessert spot — lovely for a relaxed, photogenic outing.',
+    easyPace: true,
   },
   {
     id: 'sweet-treat-dessert',
@@ -189,6 +203,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     emoji: '🍔',
     category: 'home',
     description: 'Halal burgers, corn, watermelon, and lemonade — the classic American backyard summer, made at home.',
+    firstVisitHighlight: true,
   },
   {
     id: 'friends-potluck',
@@ -247,6 +262,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     emoji: '🌅',
     category: 'local',
     description: 'A scenic riverside walk with skyline views — lovely at sunset.',
+    easyPace: true,
   },
   {
     id: 'hollywood-cemetery',
@@ -254,6 +270,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     emoji: '🌳',
     category: 'local',
     description: 'A peaceful, beautiful 135-acre garden cemetery overlooking the James — history and views in one easy walk.',
+    easyPace: true,
   },
   {
     id: 'river-city-roll',
@@ -275,13 +292,15 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     emoji: '🛒',
     category: 'local',
     description: 'A browse-everything American grocery-store experience — surprisingly fun for first-time visitors.',
+    firstVisitHighlight: true,
   },
   {
     id: 'byrd-theatre',
     title: 'Byrd Theatre, Carytown',
     emoji: '🎬',
-    category: 'food',
+    category: 'local',
     description: 'A historic 1928 cinema with its mighty Wurlitzer organ playing before the show — a true Richmond classic.',
+    firstVisitHighlight: true,
   },
   {
     id: 'shopping-gifts-night',
@@ -305,6 +324,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     emoji: '🎪',
     category: 'event',
     description: 'Vendors, live music, and food at 17th Street Market, every 2nd Saturday — easy and local.',
+    easyPace: true,
   },
   {
     id: 'dragon-boat-festival',
@@ -319,6 +339,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     emoji: '🍉',
     category: 'event',
     description: "Richmond's biggest local festival — music, shopping, food, and free admission, right in Carytown.",
+    easyPace: true,
   },
   {
     id: 'lewis-ginter-flowers-after-5',
@@ -326,6 +347,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     emoji: '🌙',
     category: 'event',
     description: 'Select Thursday evenings with the garden open until 9pm and live music — the easiest beautiful evening of the trip.',
+    easyPace: true,
   },
   {
     id: 'lewis-ginter-concert',
@@ -333,6 +355,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     emoji: '🎸',
     category: 'event',
     description: 'An outdoor evening concert in the garden (doors around 6pm) — bring a blanket and relax under the trees.',
+    easyPace: true,
   },
   {
     id: 'richmond-jazz-festival',
