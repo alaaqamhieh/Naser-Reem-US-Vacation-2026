@@ -6,7 +6,8 @@
   "description": "A warm interactive welcome and trip itinerary for Naser & Reem's visit to Richmond, VA.",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && node --experimental-strip-types scripts/build-ics.ts && vite build",
+    "generate:ics": "node --experimental-strip-types scripts/build-ics.ts",
     "lint": "oxlint",
     "preview": "vite preview"
   },

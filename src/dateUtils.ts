@@ -77,6 +77,18 @@ export function isWithinRange(date: string, start: string, end: string): boolean
   return date >= start && date <= end
 }
 
+/** Row-wrap-aware rounding for a bar spanning [start, end] on a Monday-first
+ *  7-column grid: the left edge only rounds at the true start (or a row's
+ *  Monday), and the right edge only at the true end (or a row's Sunday) —
+ *  so a multi-day bar reads as one continuous shape across the grid. */
+export function spanEdges(date: string, start: string, end: string): { roundLeft: boolean; roundRight: boolean } {
+  const mondayFirst = (weekdayOf(date) + 6) % 7
+  return {
+    roundLeft: date === start || mondayFirst === 0,
+    roundRight: date === end || mondayFirst === 6,
+  }
+}
+
 /** Whole days between two ISO dates (b - a), using UTC midnight to avoid DST/timezone drift. */
 export function daysBetween(a: string, b: string): number {
   const { year: ay, month: am, day: ad } = parseIso(a)

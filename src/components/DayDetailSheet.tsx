@@ -1,5 +1,6 @@
 import type { ActivityIdea, CalendarEntry, Milestone } from '../types'
 import { dayLabel } from '../dateUtils'
+import { milestoneColor } from '../milestoneColors'
 import { useEscapeToClose } from '../useEscapeToClose'
 import { useConfirm } from '../useConfirm'
 
@@ -19,6 +20,7 @@ function EntryRow({
   onRemove: () => void
 }) {
   const { armed, trigger } = useConfirm(onRemove)
+  const isMultiDay = !!entry.endDate && entry.endDate !== entry.date
   return (
     <li className={`day-sheet__entry day-sheet__entry--${activity.category} ${entry.completed ? 'day-sheet__entry--done' : ''}`}>
       <button
@@ -34,8 +36,13 @@ function EntryRow({
         <span className="day-sheet__entry-title">
           <span aria-hidden="true">{activity.emoji}</span> {activity.title}
         </span>
-        {(entry.startTime || entry.note) && (
+        {(entry.startTime || entry.note || isMultiDay) && (
           <span className="day-sheet__entry-meta">
+            {isMultiDay && (
+              <span className="chip__time">
+                {dayLabel(entry.date)} – {dayLabel(entry.endDate!)}
+              </span>
+            )}
             {entry.startTime && (
               <span className="chip__time">
                 {entry.startTime}
@@ -74,7 +81,6 @@ export function DayDetailSheet({
   date,
   entries,
   activities,
-  isHosted,
   milestones,
   onEditMilestone,
   onToggleCompleted,
@@ -87,7 +93,6 @@ export function DayDetailSheet({
   date: string
   entries: CalendarEntry[]
   activities: ActivityIdea[]
-  isHosted: boolean
   milestones: Milestone[]
   onEditMilestone: (milestoneId: string) => void
   onToggleCompleted: (entryId: string) => void
@@ -104,14 +109,22 @@ export function DayDetailSheet({
     <div className="modal-overlay" role="dialog" aria-modal="true" aria-label={`Plans for ${dayLabel(date)}`} onClick={onClose}>
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <h2 className="modal-card__title">{dayLabel(date)}</h2>
-        {milestones.map((m) => (
-          <button key={m.id} type="button" className="day-sheet__milestone" onClick={() => onEditMilestone(m.id)}>
-            <span aria-hidden="true">{m.emoji}</span>
-            <span className="day-sheet__milestone-title">{m.title}</span>
-            <span aria-hidden="true">✏️</span>
-          </button>
-        ))}
-        {isHosted && <p className="day-sheet__hosted">✈️ Alaa is in Jordan — the brothers are hosting this day.</p>}
+        {milestones.map((m) => {
+          const c = milestoneColor(m.color)
+          return (
+            <button
+              key={m.id}
+              type="button"
+              className="day-sheet__milestone"
+              style={{ background: c.soft, borderLeftColor: c.base, color: c.text }}
+              onClick={() => onEditMilestone(m.id)}
+            >
+              <span aria-hidden="true">{m.emoji}</span>
+              <span className="day-sheet__milestone-title">{m.title}</span>
+              <span aria-hidden="true">✏️</span>
+            </button>
+          )
+        })}
 
         {entries.length === 0 ? (
           <p className="modal-card__hint">Nothing planned yet — a free day is a good day too.</p>

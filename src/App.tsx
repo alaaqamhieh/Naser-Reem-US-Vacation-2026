@@ -5,10 +5,9 @@
 // =============================================================================
 
 import { useCallback, useMemo, useState } from 'react'
-import { JORDAN_TRIP_END, JORDAN_TRIP_START, TRIP_END, TRIP_START, WELCOME_NAMES } from './data'
 import { loadState, saveState } from './storage'
-import { buildItineraryIcs, buildSingleEventIcs, downloadIcs } from './ics'
-import type { ActivityCategory, AppState, CalendarEntry } from './types'
+import { buildSingleEventIcs, downloadIcs } from './ics'
+import type { ActivityCategory, AppState, CalendarEntry, TripSettings } from './types'
 import { Hero } from './components/Hero'
 import { Calendar } from './components/Calendar'
 import { Library } from './components/Library'
@@ -21,6 +20,7 @@ import { QuickNav } from './components/QuickNav'
 import { DayDetailSheet } from './components/DayDetailSheet'
 import { EntryEditModal } from './components/EntryEditModal'
 import { MilestoneFormModal } from './components/MilestoneFormModal'
+import { SettingsModal } from './components/SettingsModal'
 import { isWithinRange } from './dateUtils'
 
 function newId(prefix: string): string {
@@ -48,6 +48,7 @@ export default function App() {
   const [editingEntryId, setEditingEntryId] = useState<string | null>(null)
   // Special dates: 'closed' | 'create' | a milestone id being edited.
   const [milestoneFormMode, setMilestoneFormMode] = useState<'closed' | 'create' | string>('closed')
+  const [settingsOpen, setSettingsOpen] = useState(false)
 
   const updateState = useCallback((updater: (prev: AppState) => AppState) => {
     setState((prev) => {
@@ -142,14 +143,14 @@ export default function App() {
   )
 
   const addMilestone = useCallback(
-    (data: { title: string; emoji: string; start: string; end: string }) => {
+    (data: { title: string; emoji: string; start: string; end: string; color: string }) => {
       updateState((prev) => ({ ...prev, milestones: [...prev.milestones, { ...data, id: newId('m') }] }))
     },
     [updateState],
   )
 
   const editMilestone = useCallback(
-    (id: string, data: { title: string; emoji: string; start: string; end: string }) => {
+    (id: string, data: { title: string; emoji: string; start: string; end: string; color: string }) => {
       updateState((prev) => ({
         ...prev,
         milestones: prev.milestones.map((m) => (m.id === id ? { ...m, ...data } : m)),
@@ -166,7 +167,7 @@ export default function App() {
   )
 
   const updateEntry = useCallback(
-    (entryId: string, patch: Partial<Pick<CalendarEntry, 'date' | 'note' | 'startTime' | 'endTime'>>) => {
+    (entryId: string, patch: Partial<Pick<CalendarEntry, 'date' | 'endDate' | 'note' | 'startTime' | 'endTime'>>) => {
       updateState((prev) => ({
         ...prev,
         entries: prev.entries.map((e) => (e.id === entryId ? { ...e, ...patch } : e)),
@@ -174,6 +175,15 @@ export default function App() {
     },
     [updateState],
   )
+
+  const updateSettings = useCallback(
+    (patch: Partial<TripSettings>) => {
+      updateState((prev) => ({ ...prev, settings: { ...prev.settings, ...patch } }))
+    },
+    [updateState],
+  )
+
+  const { tripStart, tripEnd, dadName, momName } = state.settings
 
   const scheduledIds = useMemo(() => new Set(state.entries.map((e) => e.activityId)), [state.entries])
 
@@ -212,9 +222,11 @@ export default function App() {
     if (entry && activity) downloadIcs(`${activity.title}.ics`, buildSingleEventIcs(entry, activity))
   }
 
-  const handleExportAll = () => {
-    downloadIcs('naser-reem-itinerary.ics', buildItineraryIcs(state.entries, state.activities))
-  }
+  // The shared calendar feed is a static file generated at build time (see
+  // scripts/build-ics.ts) from the same seed data — it can't reflect anyone's
+  // personal in-browser drag-and-drop edits, which live only in localStorage.
+  const feedUrl = new URL('itinerary.ics', window.location.href).href
+  const subscribeUrl = feedUrl.replace(/^https?:/, 'webcal:')
 
   const editingActivity =
     activityFormMode !== 'closed' && activityFormMode !== 'create'
@@ -233,20 +245,20 @@ export default function App() {
   return (
     <div className="app">
       <Hero
-        dadName={WELCOME_NAMES.dad}
-        momName={WELCOME_NAMES.mom}
-        tripStart={TRIP_START}
-        tripEnd={TRIP_END}
+        dadName={dadName}
+        momName={momName}
+        tripStart={tripStart}
+        tripEnd={tripEnd}
         today={todayIso()}
-        onExportAll={handleExportAll}
+        subscribeUrl={subscribeUrl}
+        feedUrl={feedUrl}
         onOpenDeck={() => setDeckOpen(true)}
+        onOpenSettings={() => setSettingsOpen(true)}
       />
 
       <Calendar
-        tripStart={TRIP_START}
-        tripEnd={TRIP_END}
-        hostedStart={JORDAN_TRIP_START}
-        hostedEnd={JORDAN_TRIP_END}
+        tripStart={tripStart}
+        tripEnd={tripEnd}
         entries={state.entries}
         activities={state.activities}
         onRemoveEntry={removeEntry}
@@ -286,8 +298,8 @@ export default function App() {
 
       {pendingScheduleActivityId && (
         <DatePickerModal
-          tripStart={TRIP_START}
-          tripEnd={TRIP_END}
+          tripStart={tripStart}
+          tripEnd={tripEnd}
           title={`Add "${state.activities.find((a) => a.id === pendingScheduleActivityId)?.title ?? ''}"`}
           entries={state.entries}
           today={todayIso()}
@@ -328,9 +340,10 @@ export default function App() {
       {dayDetailDate && (
         <DayDetailSheet
           date={dayDetailDate}
-          entries={state.entries.filter((e) => e.date === dayDetailDate)}
+          entries={state.entries.filter(
+            (e) => dayDetailDate >= e.date && dayDetailDate <= (e.endDate ?? e.date),
+          )}
           activities={state.activities}
-          isHosted={isWithinRange(dayDetailDate, JORDAN_TRIP_START, JORDAN_TRIP_END)}
           milestones={state.milestones.filter((m) => isWithinRange(dayDetailDate, m.start, m.end))}
           onEditMilestone={(id) => {
             setDayDetailDate(null)
@@ -355,8 +368,8 @@ export default function App() {
         <EntryEditModal
           entry={editingEntry}
           activity={editingActivityForEntry}
-          tripStart={TRIP_START}
-          tripEnd={TRIP_END}
+          tripStart={tripStart}
+          tripEnd={tripEnd}
           onSave={(patch) => {
             updateEntry(editingEntry.id, patch)
             setEditingEntryId(null)
@@ -368,8 +381,8 @@ export default function App() {
       {milestoneFormMode !== 'closed' && (
         <MilestoneFormModal
           initial={editingMilestone}
-          tripStart={TRIP_START}
-          tripEnd={TRIP_END}
+          tripStart={tripStart}
+          tripEnd={tripEnd}
           onSave={(data) => {
             if (milestoneFormMode === 'create') addMilestone(data)
             else editMilestone(milestoneFormMode, data)
@@ -385,6 +398,10 @@ export default function App() {
           }
           onClose={() => setMilestoneFormMode('closed')}
         />
+      )}
+
+      {settingsOpen && (
+        <SettingsModal settings={state.settings} onSave={updateSettings} onClose={() => setSettingsOpen(false)} />
       )}
 
       {deckOpen && (

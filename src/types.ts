@@ -38,6 +38,8 @@ export interface CalendarEntry {
   activityId: string
   /** ISO date, e.g. '2026-07-04'. Always within TRIP_START..TRIP_END. */
   date: string
+  /** Inclusive end date for a multi-day plan; absent/equal to `date` = single day. */
+  endDate?: string
   /** Optional 24h 'HH:mm' times; entries without one default to a generic block. */
   startTime?: string
   endTime?: string
@@ -54,6 +56,16 @@ export interface Milestone {
   /** ISO dates, inclusive range; single-day when start === end. */
   start: string
   end: string
+  /** Key into MILESTONE_COLORS (src/milestoneColors.ts) — drives both the
+   *  ribbon and the calendar day's background tint. */
+  color: string
+}
+
+export interface TripSettings {
+  tripStart: string
+  tripEnd: string
+  dadName: string
+  momName: string
 }
 
 export interface AppState {
@@ -64,4 +76,5 @@ export interface AppState {
   shortlist: string[]
   /** Activity ids marked "not for us" in the deck — hidden from future decks, always restorable. */
   rejected: string[]
+  settings: TripSettings
 }

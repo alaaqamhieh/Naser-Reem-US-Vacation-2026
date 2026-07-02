@@ -239,6 +239,18 @@ a {
   gap: 10px;
   margin-top: 8px;
 }
+.hero__subscribe-hint {
+  max-width: 460px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  margin-top: -2px;
+}
+.hero__subscribe-fallback {
+  color: var(--accent-deep);
+  font-weight: 700;
+  text-decoration: underline;
+}
 
 /* =============================================================================
    Calendar
@@ -248,18 +260,20 @@ a {
 }
 
 .month-grid {
-  margin-bottom: 36px;
+  margin-bottom: 40px;
 }
 .month-grid__label {
-  font-size: 22px;
-  margin-bottom: 12px;
+  font-size: 23px;
+  margin-bottom: 14px;
   color: var(--accent-deep);
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line);
 }
 .month-grid__weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
-  margin-bottom: 6px;
+  gap: 7px;
+  margin-bottom: 7px;
 }
 .month-grid__weekday {
   text-align: center;
@@ -272,7 +286,7 @@ a {
 .month-grid__days {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
+  gap: 7px;
 }
 
 .day-cell {
@@ -286,18 +300,33 @@ a {
   flex-direction: column;
   gap: 4px;
   position: relative;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 .day-cell--blank {
   background: transparent;
   border: none;
 }
+.day-cell:hover {
+  box-shadow: var(--shadow-soft);
+}
 .day-cell--today {
   border-color: var(--accent);
   box-shadow: 0 0 0 2px var(--accent-soft);
 }
-.day-cell--hosted {
-  background: var(--sky-soft);
+.day-cell--today .day-cell__num {
+  color: var(--accent-deep);
+  background: var(--accent-soft);
+  border-radius: 999px;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+/* The day's tint comes straight from whichever special date covers it —
+   one system, driven entirely by the milestone's chosen color. */
+.day-cell--milestone {
+  border-color: transparent;
 }
 .day-cell--drag-over {
   background: var(--accent-soft);
@@ -312,40 +341,73 @@ a {
   font-weight: 700;
   color: var(--ink-soft);
 }
-.day-cell__hosted-badge {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  font-size: 11px;
-  line-height: 1;
-}
-.milestone-ribbon {
+
+/* Shared "spans multiple days" bar — used by both milestone ribbons and
+   multi-day activities, row-wrap-aware so a long stay reads as one
+   continuous shape across the grid (Google-Calendar style). */
+.span-bar {
   display: flex;
   align-items: center;
   gap: 4px;
   border: none;
-  border-radius: 6px;
-  background: linear-gradient(100deg, var(--gold-soft), #fdf3d9);
-  border-left: 3px solid var(--gold);
-  color: #7a5a17;
   font-size: 10.5px;
   font-weight: 800;
   padding: 3px 5px;
   text-align: left;
   min-width: 0;
+  position: relative;
 }
-.milestone-ribbon:hover {
-  filter: brightness(0.97);
+.span-bar--round-left {
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  margin-left: 0;
 }
-.milestone-ribbon--cont {
+.span-bar--round-right {
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+  margin-right: 0;
+}
+.span-bar--cut-left {
+  margin-left: -6px;
+  padding-left: 8px;
+}
+.span-bar--cut-right {
+  margin-right: -6px;
+}
+.span-bar--cut-left::before {
+  content: '‹';
+  position: absolute;
+  left: 1px;
   opacity: 0.8;
 }
-.milestone-ribbon__title {
+.span-bar--cut-right::after {
+  content: '›';
+  position: absolute;
+  right: 3px;
+  opacity: 0.8;
+}
+.span-bar__title {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   min-width: 0;
 }
+.milestone-ribbon:hover {
+  filter: brightness(0.95);
+}
+.entry-span-bar {
+  color: #fffdf8;
+}
+.entry-span-bar--big-trip { background: var(--cat-big-trip); }
+.entry-span-bar--garden { background: var(--cat-garden); }
+.entry-span-bar--food { background: var(--cat-food); }
+.entry-span-bar--home { background: var(--cat-home); }
+.entry-span-bar--local { background: var(--cat-local); }
+.entry-span-bar--event { background: var(--cat-event); }
+.entry-span-bar:hover {
+  filter: brightness(0.95);
+}
+
 .day-cell__chips {
   display: flex;
   flex-direction: column;
@@ -834,6 +896,35 @@ a {
 }
 .form-input--textarea {
   resize: vertical;
+}
+
+.form-error {
+  color: var(--cat-rose, #a3462f);
+  font-size: 13px;
+  font-weight: 700;
+  margin: -4px 0 4px;
+}
+
+.color-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.color-swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.1s ease;
+}
+.color-swatch:hover {
+  transform: scale(1.08);
+}
+.color-swatch--on {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 2px var(--bg-soft);
 }
 
 
@@ -1330,9 +1421,7 @@ a {
   width: 100%;
   border: none;
   border-radius: var(--radius-sm);
-  background: linear-gradient(100deg, var(--gold-soft), #fdf3d9);
-  border-left: 4px solid var(--gold);
-  color: #7a5a17;
+  border-left: 4px solid;
   font-size: 14.5px;
   font-weight: 700;
   padding: 11px 12px;
@@ -1341,14 +1430,6 @@ a {
 .day-sheet__milestone-title {
   flex: 1;
   min-width: 0;
-}
-.day-sheet__hosted {
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--ink-soft);
-  background: var(--sky-soft);
-  border-radius: 8px;
-  padding: 8px 12px;
 }
 .day-sheet__entries {
   list-style: none;
@@ -1517,39 +1598,7 @@ a {
   .day-cell__num {
     font-size: 10.5px;
   }
-  .day-cell__hosted-badge {
-    top: 3px;
-    right: 3px;
-    font-size: 9px;
-  }
-  .milestone-ribbon {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  border: none;
-  border-radius: 6px;
-  background: linear-gradient(100deg, var(--gold-soft), #fdf3d9);
-  border-left: 3px solid var(--gold);
-  color: #7a5a17;
-  font-size: 10.5px;
-  font-weight: 800;
-  padding: 3px 5px;
-  text-align: left;
-  min-width: 0;
-}
-.milestone-ribbon:hover {
-  filter: brightness(0.97);
-}
-.milestone-ribbon--cont {
-  opacity: 0.8;
-}
-.milestone-ribbon__title {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  min-width: 0;
-}
-.day-cell__chips {
+  .day-cell__chips {
     flex-direction: row;
     flex-wrap: wrap;
     gap: 2px;
@@ -1570,12 +1619,12 @@ a {
   .day-cell .chip__actions {
     display: none;
   }
-  .milestone-ribbon {
+  .span-bar {
     padding: 2px 3px;
     font-size: 9px;
     align-self: flex-start;
   }
-  .milestone-ribbon__title {
+  .span-bar__title {
     display: none;
   }
   .section-title-row__action {

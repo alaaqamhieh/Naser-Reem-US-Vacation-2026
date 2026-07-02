@@ -4,27 +4,61 @@
 //  calendar, edit SEED_ENTRIES (activityId must match an id in SEED_ACTIVITIES).
 // =============================================================================
 
-import type { ActivityIdea, CalendarEntry, Milestone } from './types'
+import type { ActivityIdea, CalendarEntry, Milestone, TripSettings } from './types'
 
+// Confirmed against the Qatar Airways booking (DXB⇄IAD): lands July 4 3:40 PM,
+// departs August 14 9:00 PM — so the last full day in the US is Aug 14, not 13.
 export const TRIP_START = '2026-07-04'
-export const TRIP_END = '2026-08-13'
+export const TRIP_END = '2026-08-14'
 
 export const WELCOME_NAMES = { dad: 'Naser', mom: 'Reem' }
 
-// Alaa is away in Jordan and his brothers host Naser & Reem during this window.
-export const JORDAN_TRIP_START = '2026-07-23'
-export const JORDAN_TRIP_END = '2026-08-03'
+export const DEFAULT_SETTINGS: TripSettings = {
+  tripStart: TRIP_START,
+  tripEnd: TRIP_END,
+  dadName: WELCOME_NAMES.dad,
+  momName: WELCOME_NAMES.mom,
+}
 
 // -----------------------------------------------------------------------------
-//  Special dates — flights and travel windows, shown as gold ribbons on the
-//  calendar. Fully editable, and new ones can span multiple days.
+//  Special dates — flights and travel windows. Each carries a color (see
+//  src/milestoneColors.ts) that also tints the calendar days it spans, fully
+//  editable, and new ones can span multiple days.
 // -----------------------------------------------------------------------------
 
 export const SEED_MILESTONES: Milestone[] = [
-  { id: 'm-arrival', title: 'Naser & Reem arrive! Flight lands', emoji: '🛬', start: '2026-07-04', end: '2026-07-04' },
-  { id: 'm-jordan', title: 'Alaa & Bissan in Jordan', emoji: '✈️', start: '2026-07-23', end: '2026-08-03' },
-  { id: 'm-return', title: 'Alaa & Bissan fly back home', emoji: '🛬', start: '2026-08-04', end: '2026-08-04' },
-  { id: 'm-departure', title: 'Naser & Reem fly home', emoji: '🛫', start: '2026-08-13', end: '2026-08-13' },
+  {
+    id: 'm-arrival',
+    title: 'Naser & Reem land at IAD (Washington Dulles) 3:40 PM — Qatar Airways QR707',
+    emoji: '🛬',
+    start: '2026-07-04',
+    end: '2026-07-04',
+    color: 'green',
+  },
+  {
+    id: 'm-jordan',
+    title: 'Alaa & Bissan in Jordan — the brothers are hosting',
+    emoji: '✈️',
+    start: '2026-07-23',
+    end: '2026-08-03',
+    color: 'sky',
+  },
+  {
+    id: 'm-return',
+    title: 'Alaa & Bissan fly back home',
+    emoji: '🛬',
+    start: '2026-08-04',
+    end: '2026-08-04',
+    color: 'sky',
+  },
+  {
+    id: 'm-departure',
+    title: 'Naser & Reem depart IAD (Washington Dulles) 9:00 PM — Qatar Airways QR708',
+    emoji: '🛫',
+    start: '2026-08-14',
+    end: '2026-08-14',
+    color: 'rose',
+  },
 ]
 
 // -----------------------------------------------------------------------------
@@ -995,5 +1029,6 @@ export const SEED_ENTRIES: CalendarEntry[] = [
   entry('2026-08-10', 'rest-night'),
   entry('2026-08-11', 'shopping-gifts-night'),
   entry('2026-08-12', 'family-photo-night'),
-  entry('2026-08-13', 'farewell-dinner'),
+  entry('2026-08-13', 'rest-night', 'Pack the suitcases, easy last full day.'),
+  entry('2026-08-14', 'farewell-dinner', 'Early dinner before the drive to IAD for the 9pm flight.'),
 ]

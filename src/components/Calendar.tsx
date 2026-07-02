@@ -8,8 +8,6 @@ const WEEKDAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 export function Calendar({
   tripStart,
   tripEnd,
-  hostedStart,
-  hostedEnd,
   entries,
   activities,
   onRemoveEntry,
@@ -25,9 +23,6 @@ export function Calendar({
 }: {
   tripStart: string
   tripEnd: string
-  /** Date range (inclusive) during which the brothers host while Alaa is in Jordan. */
-  hostedStart: string
-  hostedEnd: string
   entries: CalendarEntry[]
   activities: ActivityIdea[]
   onRemoveEntry: (entryId: string) => void
@@ -43,13 +38,6 @@ export function Calendar({
 }) {
   const dates = tripDates(tripStart, tripEnd)
   const months = groupByMonth(dates)
-
-  const entriesByDate = new Map<string, CalendarEntry[]>()
-  for (const e of entries) {
-    const list = entriesByDate.get(e.date) ?? []
-    list.push(e)
-    entriesByDate.set(e.date, list)
-  }
 
   return (
     <section className="calendar-section" id="calendar" aria-label="Trip calendar">
@@ -85,7 +73,9 @@ export function Calendar({
                   <DayCell
                     key={date}
                     date={date}
-                    entries={entriesByDate.get(date) ?? []}
+                    entries={entries
+                      .filter((e) => date >= e.date && date <= (e.endDate ?? e.date))
+                      .map((e) => ({ entry: e, isStart: date === e.date }))}
                     activities={activities}
                     onRemove={onRemoveEntry}
                     onToggleCompleted={onToggleCompleted}
@@ -94,7 +84,6 @@ export function Calendar({
                     onEditEntry={onEditEntry}
                     onOpenDay={() => onOpenDay(date)}
                     isToday={date === today}
-                    isHosted={isWithinRange(date, hostedStart, hostedEnd)}
                     milestones={milestones
                       .filter((m) => isWithinRange(date, m.start, m.end))
                       .map((m) => ({ m, isStart: date === m.start }))}

@@ -3,10 +3,21 @@
 // trip happens in one place and is consumed by the same two people, so the
 // added complexity of a VTIMEZONE block isn't worth it here.
 
-import type { ActivityIdea, CalendarEntry } from './types'
+import type { ActivityIdea, CalendarEntry, Milestone } from './types'
 
 function pad(n: number): string {
   return String(n).padStart(2, '0')
+}
+
+function addOneDay(date: string): string {
+  const [y, m, d] = date.split('-').map(Number)
+  const next = new Date(Date.UTC(y, m - 1, d + 1))
+  return `${next.getUTCFullYear()}${pad(next.getUTCMonth() + 1)}${pad(next.getUTCDate())}`
+}
+
+function toIcsDate(date: string): string {
+  const [y, m, d] = date.split('-').map(Number)
+  return `${y}${pad(m)}${pad(d)}`
 }
 
 function toIcsDateTime(date: string, time?: string): string {
@@ -29,7 +40,8 @@ function buildVEvent(entry: CalendarEntry, activity: ActivityIdea): string {
   const uid = `${entry.id}@naser-reem-vacation`
   const start = entry.startTime ?? '09:00'
   const dtStart = toIcsDateTime(entry.date, start)
-  const dtEnd = toIcsDateTime(entry.date, entry.endTime ?? addOneHour(start))
+  const lastDay = entry.endDate ?? entry.date
+  const dtEnd = toIcsDateTime(lastDay, entry.endTime ?? (lastDay === entry.date ? addOneHour(start) : start))
   const now = new Date()
   const dtStamp = `${now.getUTCFullYear()}${pad(now.getUTCMonth() + 1)}${pad(now.getUTCDate())}T${pad(now.getUTCHours())}${pad(now.getUTCMinutes())}${pad(now.getUTCSeconds())}Z`
   const summary = escapeIcsText(`${activity.emoji} ${activity.title}`)
@@ -48,6 +60,25 @@ function buildVEvent(entry: CalendarEntry, activity: ActivityIdea): string {
     .join('\r\n')
 }
 
+function buildMilestoneVEvent(m: Milestone): string {
+  const uid = `${m.id}@naser-reem-vacation`
+  const dtStart = toIcsDate(m.start)
+  // All-day events use an exclusive DTEND — the day after the last inclusive day.
+  const dtEnd = addOneDay(m.end)
+  const now = new Date()
+  const dtStamp = `${now.getUTCFullYear()}${pad(now.getUTCMonth() + 1)}${pad(now.getUTCDate())}T${pad(now.getUTCHours())}${pad(now.getUTCMinutes())}${pad(now.getUTCSeconds())}Z`
+  const summary = escapeIcsText(`${m.emoji} ${m.title}`)
+  return [
+    'BEGIN:VEVENT',
+    `UID:${uid}`,
+    `DTSTAMP:${dtStamp}`,
+    `DTSTART;VALUE=DATE:${dtStart}`,
+    `DTEND;VALUE=DATE:${dtEnd}`,
+    `SUMMARY:${summary}`,
+    'END:VEVENT',
+  ].join('\r\n')
+}
+
 function wrapCalendar(events: string[]): string {
   return [
     'BEGIN:VCALENDAR',
@@ -63,15 +94,16 @@ export function buildSingleEventIcs(entry: CalendarEntry, activity: ActivityIdea
   return wrapCalendar([buildVEvent(entry, activity)])
 }
 
-export function buildItineraryIcs(entries: CalendarEntry[], activities: ActivityIdea[]): string {
+export function buildItineraryIcs(entries: CalendarEntry[], activities: ActivityIdea[], milestones: Milestone[] = []): string {
   const byId = new Map(activities.map((a) => [a.id, a]))
-  const events = entries
+  const entryEvents = entries
     .map((e) => {
       const activity = byId.get(e.activityId)
       return activity ? buildVEvent(e, activity) : null
     })
     .filter((x): x is string => x !== null)
-  return wrapCalendar(events)
+  const milestoneEvents = milestones.map(buildMilestoneVEvent)
+  return wrapCalendar([...milestoneEvents, ...entryEvents])
 }
 
 export function downloadIcs(filename: string, content: string) {

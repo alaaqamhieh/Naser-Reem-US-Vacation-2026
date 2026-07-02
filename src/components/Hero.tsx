@@ -17,19 +17,26 @@ export function Hero({
   tripStart,
   tripEnd,
   today,
-  onExportAll,
+  subscribeUrl,
+  feedUrl,
   onOpenDeck,
+  onOpenSettings,
 }: {
   dadName: string
   momName: string
   tripStart: string
   tripEnd: string
   today: string
-  onExportAll: () => void
+  subscribeUrl: string
+  feedUrl: string
   onOpenDeck: () => void
+  onOpenSettings: () => void
 }) {
   return (
     <header className="hero">
+      <button type="button" className="hero__settings-btn" aria-label="Settings" onClick={onOpenSettings}>
+        ⚙️
+      </button>
       <p className="hero__eyebrow">Welcome to Richmond</p>
       <h1 className="hero__title">
         {dadName} &amp; {momName}
@@ -53,10 +60,19 @@ export function Hero({
         <a href="#ideas" className="secondary-btn">
           Browse Ideas
         </a>
-        <button type="button" className="text-btn" onClick={onExportAll}>
-          📅 Export whole itinerary
-        </button>
+        <a href={subscribeUrl} className="text-btn">
+          🔔 Subscribe to the calendar
+        </a>
       </div>
+      <p className="hero__subscribe-hint">
+        Tap "Subscribe" to link the shared itinerary into your phone's calendar app — it'll stay up to date
+        automatically. (It shows the shared plan, not anyone's personal drag-and-drop changes on this site.) Calendar
+        app doesn't open it?{' '}
+        <a href={feedUrl} className="hero__subscribe-fallback">
+          Download the file instead
+        </a>
+        .
+      </p>
     </header>
   )
 }
