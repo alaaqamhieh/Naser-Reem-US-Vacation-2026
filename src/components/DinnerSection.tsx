@@ -13,7 +13,7 @@ export function DinnerSection({
   dinnerIdeas: DinnerIdea[]
   favorites: string[]
   onToggleFavorite: (id: string) => void
-  onCreateNew: () => void
+  onCreateNew: (cuisine?: string) => void
   onEdit: (id: string) => void
   onDelete: (id: string) => void
 }) {
@@ -92,11 +92,21 @@ export function DinnerSection({
                 onDelete={idea.isCustom ? () => onDelete(idea.id) : undefined}
               />
             ))}
+            {active !== 'favorites' && (
+              <button
+                type="button"
+                className="dinner-card dinner-card--add"
+                onClick={() => onCreateNew(g.cuisine)}
+              >
+                <span aria-hidden="true">+</span>
+                <span>Add a {g.cuisine} dish</span>
+              </button>
+            )}
           </div>
         </div>
       ))}
 
-      <button type="button" className="add-idea-btn" onClick={onCreateNew}>
+      <button type="button" className="add-idea-btn" onClick={() => onCreateNew()}>
         + Add a dinner idea
       </button>
     </section>

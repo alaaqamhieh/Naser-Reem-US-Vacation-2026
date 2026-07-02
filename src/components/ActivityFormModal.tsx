@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { ActivityCategory, ActivityIdea } from '../types'
 import { useEscapeToClose } from '../useEscapeToClose'
 import { useConfirm } from '../useConfirm'
+import { EmojiPicker } from './EmojiPicker'
 
 const CATEGORY_OPTIONS: { key: ActivityCategory; label: string }[] = [
   { key: 'big-trip', label: 'Big Trip' },
@@ -43,15 +44,10 @@ export function ActivityFormModal({
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <h2 className="modal-card__title">{initial ? 'Edit Idea' : 'Add Your Own Idea'}</h2>
 
-        <label className="form-field">
+        <div className="form-field">
           <span>Emoji</span>
-          <input
-            value={emoji}
-            onChange={(e) => setEmoji(e.target.value)}
-            maxLength={4}
-            className="form-input form-input--emoji"
-          />
-        </label>
+          <EmojiPicker value={emoji} onChange={setEmoji} />
+        </div>
 
         <label className="form-field">
           <span>Title</span>

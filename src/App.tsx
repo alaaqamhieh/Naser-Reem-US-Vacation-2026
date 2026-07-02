@@ -51,6 +51,7 @@ export default function App() {
   const [milestoneFormMode, setMilestoneFormMode] = useState<'closed' | 'create' | string>('closed')
   const [subscribeOpen, setSubscribeOpen] = useState(false)
   const [dinnerFormMode, setDinnerFormMode] = useState<'closed' | 'create' | string>('closed')
+  const [dinnerFormCuisine, setDinnerFormCuisine] = useState<string | undefined>(undefined)
 
   const updateState = useCallback((updater: (prev: AppState) => AppState) => {
     setState((prev) => {
@@ -169,7 +170,7 @@ export default function App() {
   )
 
   const addDinnerIdea = useCallback(
-    (data: { dish: string; cuisine: string; emoji: string; notes: string }) => {
+    (data: { dish: string; cuisine: string; emoji: string; notes: string; photo?: string }) => {
       updateState((prev) => ({
         ...prev,
         dinnerIdeas: [...prev.dinnerIdeas, { ...data, id: newId('dinner'), isCustom: true }],
@@ -179,7 +180,7 @@ export default function App() {
   )
 
   const editDinnerIdea = useCallback(
-    (id: string, data: { dish: string; cuisine: string; emoji: string; notes: string }) => {
+    (id: string, data: { dish: string; cuisine: string; emoji: string; notes: string; photo?: string }) => {
       updateState((prev) => ({
         ...prev,
         dinnerIdeas: prev.dinnerIdeas.map((d) => (d.id === id ? { ...d, ...data } : d)),
@@ -335,7 +336,10 @@ export default function App() {
         dinnerIdeas={state.dinnerIdeas}
         favorites={state.dinnerFavorites}
         onToggleFavorite={toggleDinnerFavorite}
-        onCreateNew={() => setDinnerFormMode('create')}
+        onCreateNew={(cuisine) => {
+          setDinnerFormCuisine(cuisine)
+          setDinnerFormMode('create')
+        }}
         onEdit={(id) => setDinnerFormMode(id)}
         onDelete={deleteDinnerIdea}
       />
@@ -452,11 +456,13 @@ export default function App() {
       {dinnerFormMode !== 'closed' && (
         <DinnerFormModal
           initial={editingDinnerIdea}
+          initialCuisine={dinnerFormCuisine}
           cuisines={dinnerCuisines}
           onSave={(data) => {
             if (dinnerFormMode === 'create') addDinnerIdea(data)
             else editDinnerIdea(dinnerFormMode, data)
             setDinnerFormMode('closed')
+            setDinnerFormCuisine(undefined)
           }}
           onDelete={
             editingDinnerIdea
@@ -466,7 +472,10 @@ export default function App() {
                 }
               : undefined
           }
-          onClose={() => setDinnerFormMode('closed')}
+          onClose={() => {
+            setDinnerFormMode('closed')
+            setDinnerFormCuisine(undefined)
+          }}
         />
       )}
 

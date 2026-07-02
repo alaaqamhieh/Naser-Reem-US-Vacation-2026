@@ -4,6 +4,7 @@ import { dayLabel, tripDates } from '../dateUtils'
 import { DEFAULT_MILESTONE_COLOR, MILESTONE_COLORS } from '../milestoneColors'
 import { useEscapeToClose } from '../useEscapeToClose'
 import { useConfirm } from '../useConfirm'
+import { EmojiPicker } from './EmojiPicker'
 
 /**
  * Create or edit a special date — a flight, a travel window, an anniversary.
@@ -49,10 +50,10 @@ export function MilestoneFormModal({
           Flights, travel days, anniversaries — pick a color and they tint the calendar days they cover, and can span several days.
         </p>
 
-        <label className="form-field">
+        <div className="form-field">
           <span>Emoji</span>
-          <input value={emoji} onChange={(e) => setEmoji(e.target.value)} maxLength={4} className="form-input form-input--emoji" />
-        </label>
+          <EmojiPicker value={emoji} onChange={setEmoji} />
+        </div>
 
         <label className="form-field">
           <span>Title</span>

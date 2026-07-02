@@ -5,6 +5,7 @@
 // =============================================================================
 
 import type { ActivityIdea, CalendarEntry, DinnerIdea, Milestone, TripSettings } from './types'
+import { DINNER_KNOWLEDGE } from './dinnerKnowledge.ts'
 
 // Confirmed against the Qatar Airways booking (DXB⇄IAD): lands July 4 3:40 PM,
 // departs August 14 9:00 PM — so the last full day in the US is Aug 14, not 13.
@@ -1036,34 +1037,38 @@ export const SEED_ENTRIES: CalendarEntry[] = [
 // -----------------------------------------------------------------------------
 //  Dinner night ideas — a shared brainstorm list, not curated content, so
 //  every entry (seeded or added later) is editable/deletable by the family.
+//  Seeded from DINNER_KNOWLEDGE (src/dinnerKnowledge.ts) so the emoji/notes/
+//  photo stay in sync with the same lookup the "type a dish" autocomplete uses.
 // -----------------------------------------------------------------------------
 
-function dinner(dish: string, cuisine: string, emoji: string, notes?: string): DinnerIdea {
+function dinnerFromKnowledge(dish: string): DinnerIdea {
+  const known = DINNER_KNOWLEDGE.find((d) => d.dish === dish)
+  if (!known) throw new Error(`Unknown seed dinner dish: ${dish}`)
   const id = `dinner-${dish.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`
-  return { id, dish, cuisine, emoji, notes, isCustom: true }
+  return { id, ...known, isCustom: true }
 }
 
 export const SEED_DINNER_IDEAS: DinnerIdea[] = [
-  dinner('Butter Chicken', 'Indian', '🍛', 'Creamy tomato curry, best with garlic naan.'),
-  dinner('Hot Dogs & Burgers', 'American', '🍔', 'Backyard cookout classic.'),
-  dinner('Ribs', 'American', '🍖', 'Slow-cooked, fall-off-the-bone.'),
-  dinner('Steaks', 'American', '🥩', 'Grilled to order.'),
-  dinner('Mongolian Beef', 'Chinese', '🥘', 'Sweet-savory beef and scallions over rice.'),
-  dinner('Manchurian Chicken', 'Chinese', '🍗', 'Crispy chicken in a tangy garlic-chili sauce.'),
-  dinner('Fresh Spring Rolls', 'Chinese', '🥢'),
-  dinner('Bulgogi Beef', 'Korean', '🥩', 'Marinated grilled beef, lettuce wraps.'),
-  dinner('Korean Hot Pot', 'Korean', '🍲', 'Everyone cooks at the table together.'),
-  dinner('Mloukhiyeh', 'Arabic', '🍲', 'Jute-leaf stew over rice, with chicken.'),
-  dinner('Msakhan', 'Arabic', '🍗', 'Sumac chicken over taboon bread and onions.'),
-  dinner('Shawarma', 'Arabic', '🌯'),
-  dinner('Warak Enab bi Zeit', 'Arabic', '🍃', 'Grape leaves stuffed with rice, served cold, olive oil.'),
-  dinner('Warak Enab b’Hamid', 'Arabic', '🍋', 'Grape leaves stuffed with rice and meat, lemony broth.'),
-  dinner('Sushi', 'Japanese', '🍣'),
-  dinner('Taco Salad Bowl', 'Mexican', '🥗'),
-  dinner('Tacos', 'Mexican', '🌮'),
-  dinner('Loaded Nachos', 'Mexican', '🧀'),
-  dinner('Pho', 'Vietnamese', '🍜'),
-  dinner('Pad Thai', 'Thai', '🍜', 'A starter idea — add your own favorites!'),
-  dinner('Thai Green Curry', 'Thai', '🍛'),
-  dinner('Brazilian Churrasco', 'Brazilian', '🍢', 'Texas de Brazil–style grilled meats at home.'),
-]
+  'Butter Chicken',
+  'Hot Dogs & Burgers',
+  'Ribs',
+  'Steaks',
+  'Mongolian Beef',
+  'Manchurian Chicken',
+  'Fresh Spring Rolls',
+  'Bulgogi Beef',
+  'Korean Hot Pot',
+  'Mloukhiyeh',
+  'Msakhan',
+  'Shawarma',
+  'Warak Enab bi Zeit',
+  'Warak Enab b’Hamid',
+  'Sushi',
+  'Taco Salad Bowl',
+  'Tacos',
+  'Loaded Nachos',
+  'Pho',
+  'Pad Thai',
+  'Thai Green Curry',
+  'Brazilian Churrasco',
+].map(dinnerFromKnowledge)

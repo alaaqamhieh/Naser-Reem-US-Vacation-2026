@@ -76,6 +76,8 @@ export interface DinnerIdea {
   cuisine: string
   emoji: string
   notes?: string
+  /** Path under public/ to a real photo of the dish, e.g. "photos/dinner/pho.jpg". */
+  photo?: string
   /** All dinner ideas are family-editable — this is a shared brainstorm list, not a curated one. */
   isCustom?: boolean
 }

@@ -14,7 +14,10 @@ export function DinnerCard({
   onDelete?: () => void
 }) {
   return (
-    <div className="dinner-card">
+    <div className={`dinner-card ${idea.photo ? 'dinner-card--has-photo' : ''}`}>
+      {idea.photo && (
+        <img className="dinner-card__photo" src={`${import.meta.env.BASE_URL}${idea.photo}`} alt="" loading="lazy" />
+      )}
       <div className="dinner-card__top">
         <span className="dinner-card__emoji" aria-hidden="true">
           {idea.emoji}
