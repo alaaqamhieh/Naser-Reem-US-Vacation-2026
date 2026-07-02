@@ -60,10 +60,9 @@ export function DayCell({
             className={`span-bar milestone-ribbon ${roundLeft ? 'span-bar--round-left' : 'span-bar--cut-left'} ${roundRight ? 'span-bar--round-right' : 'span-bar--cut-right'}`}
             style={{ background: c.base, color: '#fffdf8' }}
             title={m.title}
-            aria-label={`Special date: ${m.title}. Tap to edit.`}
+            aria-label={`Special date: ${m.emoji} ${m.title}. Tap to edit.`}
             onClick={() => onEditMilestone(m.id)}
           >
-            <span aria-hidden="true">{m.emoji}</span>
             {isStart && <span className="span-bar__title">{m.title}</span>}
           </button>
         )

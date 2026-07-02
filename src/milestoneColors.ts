@@ -13,7 +13,10 @@ export interface MilestoneColorOption {
 
 export const MILESTONE_COLORS: MilestoneColorOption[] = [
   { key: 'gold', label: 'Gold', base: '#d9a441', soft: '#f6e6bf', text: '#7a5a17' },
-  { key: 'sky', label: 'Sky', base: '#6fa8c9', soft: '#dceef6', text: '#2f5a70' },
+  // A deeper, more indigo blue — deliberately distinct from the page's own
+  // ambient sky-blue background glow (--sky/--sky-soft) so it still reads as
+  // its own tinted day on the calendar instead of disappearing into it.
+  { key: 'sky', label: 'Denim', base: '#46629e', soft: '#d7deef', text: '#2c3f6e' },
   { key: 'green', label: 'Green', base: '#4f8f68', soft: '#dcebe0', text: '#2f5c42' },
   { key: 'rose', label: 'Rose', base: '#c97b5a', soft: '#f3ddd2', text: '#7a4326' },
   { key: 'purple', label: 'Purple', base: '#a07fc4', soft: '#e8def2', text: '#5b3f7a' },

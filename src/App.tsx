@@ -7,7 +7,7 @@
 import { useCallback, useMemo, useState } from 'react'
 import { loadState, saveState } from './storage'
 import { buildSingleEventIcs, downloadIcs } from './ics'
-import type { ActivityCategory, AppState, CalendarEntry, TripSettings } from './types'
+import type { ActivityCategory, AppState, CalendarEntry } from './types'
 import { Hero } from './components/Hero'
 import { Calendar } from './components/Calendar'
 import { Library } from './components/Library'
@@ -20,7 +20,6 @@ import { QuickNav } from './components/QuickNav'
 import { DayDetailSheet } from './components/DayDetailSheet'
 import { EntryEditModal } from './components/EntryEditModal'
 import { MilestoneFormModal } from './components/MilestoneFormModal'
-import { SettingsModal } from './components/SettingsModal'
 import { isWithinRange } from './dateUtils'
 
 function newId(prefix: string): string {
@@ -48,7 +47,6 @@ export default function App() {
   const [editingEntryId, setEditingEntryId] = useState<string | null>(null)
   // Special dates: 'closed' | 'create' | a milestone id being edited.
   const [milestoneFormMode, setMilestoneFormMode] = useState<'closed' | 'create' | string>('closed')
-  const [settingsOpen, setSettingsOpen] = useState(false)
 
   const updateState = useCallback((updater: (prev: AppState) => AppState) => {
     setState((prev) => {
@@ -176,13 +174,6 @@ export default function App() {
     [updateState],
   )
 
-  const updateSettings = useCallback(
-    (patch: Partial<TripSettings>) => {
-      updateState((prev) => ({ ...prev, settings: { ...prev.settings, ...patch } }))
-    },
-    [updateState],
-  )
-
   const { tripStart, tripEnd, dadName, momName } = state.settings
 
   const scheduledIds = useMemo(() => new Set(state.entries.map((e) => e.activityId)), [state.entries])
@@ -253,7 +244,6 @@ export default function App() {
         subscribeUrl={subscribeUrl}
         feedUrl={feedUrl}
         onOpenDeck={() => setDeckOpen(true)}
-        onOpenSettings={() => setSettingsOpen(true)}
       />
 
       <Calendar
@@ -398,10 +388,6 @@ export default function App() {
           }
           onClose={() => setMilestoneFormMode('closed')}
         />
-      )}
-
-      {settingsOpen && (
-        <SettingsModal settings={state.settings} onSave={updateSettings} onClose={() => setSettingsOpen(false)} />
       )}
 
       {deckOpen && (

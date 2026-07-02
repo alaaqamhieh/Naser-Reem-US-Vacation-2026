@@ -20,7 +20,6 @@ export function Hero({
   subscribeUrl,
   feedUrl,
   onOpenDeck,
-  onOpenSettings,
 }: {
   dadName: string
   momName: string
@@ -30,13 +29,9 @@ export function Hero({
   subscribeUrl: string
   feedUrl: string
   onOpenDeck: () => void
-  onOpenSettings: () => void
 }) {
   return (
     <header className="hero">
-      <button type="button" className="hero__settings-btn" aria-label="Settings" onClick={onOpenSettings}>
-        ⚙️
-      </button>
       <p className="hero__eyebrow">Welcome to Richmond</p>
       <h1 className="hero__title">
         {dadName} &amp; {momName}

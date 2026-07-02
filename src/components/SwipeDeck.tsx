@@ -24,6 +24,9 @@ const FILTERS: { key: ActivityCategory | 'all'; label: string }[] = [
 
 type Verdict = 'skip' | 'heart' | 'reject'
 
+const VERDICT_ICON: Record<Verdict, string> = { heart: '❤️', skip: '↷', reject: '🚫' }
+const VERDICT_LABEL: Record<Verdict, string> = { heart: 'Shortlist!', skip: 'Skip for now', reject: 'Not for us' }
+
 const EXIT_MS = 300
 
 const prefersReducedMotion = () =>
@@ -61,6 +64,8 @@ export function SwipeDeck({
   const [heartedThisRun, setHeartedThisRun] = useState(0)
   const [exiting, setExiting] = useState<Verdict | null>(null)
   const [drag, setDrag] = useState<{ dx: number; dy: number } | null>(null)
+  // Recent verdicts, most recent last — powers the Undo button.
+  const [verdictHistory, setVerdictHistory] = useState<{ id: string; verdict: Verdict }[]>([])
   // Which picture of the top card's gallery is showing; resets on advance.
   const [photoIndex, setPhotoIndex] = useState(0)
 
@@ -103,9 +108,29 @@ export function SwipeDeck({
       onReject(activityId)
     }
     setSeen((prev) => new Set(prev).add(activityId))
+    setVerdictHistory((prev) => [...prev, { id: activityId, verdict }])
     setExiting(null)
     setDrag(null)
     setPhotoIndex(0)
+  }
+
+  // Reverses the most recent verdict: onHeart/onReject are toggles upstream,
+  // so calling them again flips the shortlist/rejected membership right back.
+  const undoLast = () => {
+    if (exiting || verdictHistory.length === 0) return
+    const last = verdictHistory[verdictHistory.length - 1]
+    if (last.verdict === 'heart') {
+      onHeart(last.id)
+      setHeartedThisRun((n) => Math.max(0, n - 1))
+    } else if (last.verdict === 'reject') {
+      onReject(last.id)
+    }
+    setSeen((prev) => {
+      const next = new Set(prev)
+      next.delete(last.id)
+      return next
+    })
+    setVerdictHistory((prev) => prev.slice(0, -1))
   }
 
   const commit = (verdict: Verdict) => {
@@ -157,6 +182,13 @@ export function SwipeDeck({
   const rejectOpacity = drag && !horizontal && drag.dy > 0 ? Math.min(1, drag.dy / (h * 0.3)) : 0
   const rotation = drag ? Math.max(-16, Math.min(16, drag.dx * 0.06)) : 0
 
+  // One centered "verdict" badge stands in for the old separate corner
+  // stamps — driven by drag progress, or shown at full strength the instant
+  // a verdict is committed (tap or completed swipe), so button taps get the
+  // same satisfying confirmation as a swipe does.
+  const activeVerdict: Verdict | null = exiting ?? (heartOpacity > 0 ? 'heart' : skipOpacity > 0 ? 'skip' : rejectOpacity > 0 ? 'reject' : null)
+  const activeOpacity = exiting ? 1 : Math.max(heartOpacity, skipOpacity, rejectOpacity)
+
   const topCardStyle = drag
     ? {
         transform: `translate(${drag.dx}px, ${drag.dy * (horizontal ? 0.15 : 1)}px) rotate(${rotation}deg)`,
@@ -167,6 +199,15 @@ export function SwipeDeck({
   return (
     <div className="deck-overlay" role="dialog" aria-modal="true" aria-label="Idea deck">
       <div className="deck__header">
+        <button
+          type="button"
+          className="deck__undo"
+          aria-label={verdictHistory.length > 0 ? `Undo: ${VERDICT_LABEL[verdictHistory[verdictHistory.length - 1].verdict]}` : 'Undo'}
+          disabled={verdictHistory.length === 0}
+          onClick={undoLast}
+        >
+          ↺
+        </button>
         <div className="deck__progress" aria-hidden={done}>
           {!done && (
             <>
@@ -241,18 +282,13 @@ export function SwipeDeck({
                   onPointerUp={isTop ? onPointerUp : undefined}
                   onPointerCancel={isTop ? () => { start.current = null; setDrag(null) } : undefined}
                 >
-                  {isTop && (
-                    <>
-                      <div className="swipe-card__stamp swipe-card__stamp--yes" style={{ opacity: heartOpacity }}>
-                        ❤️ Shortlist!
+                  {isTop && activeVerdict && (
+                    <div className="swipe-card__verdict" style={{ opacity: activeOpacity }}>
+                      <div className={`swipe-card__verdict-ring swipe-card__verdict-ring--${activeVerdict}`} aria-hidden="true">
+                        {VERDICT_ICON[activeVerdict]}
                       </div>
-                      <div className="swipe-card__stamp swipe-card__stamp--skip" style={{ opacity: skipOpacity }}>
-                        ↷ Skip for now
-                      </div>
-                      <div className="swipe-card__stamp swipe-card__stamp--no" style={{ opacity: rejectOpacity }}>
-                        🚫 Not for us
-                      </div>
-                    </>
+                      <span className="swipe-card__verdict-label">{VERDICT_LABEL[activeVerdict]}</span>
+                    </div>
                   )}
                   {a.photo &&
                     (() => {
@@ -341,7 +377,10 @@ export function SwipeDeck({
               <span className="deck__btn-label">Love it!</span>
             </div>
           </div>
-          <p className="deck__hint">Swipe right to shortlist, left to skip, down for "not for us" — or tap the buttons.</p>
+          <p className="deck__hint">
+            Swipe right to shortlist, left to skip, down for "not for us" — or tap the buttons. Changed your mind? Tap
+            ↺ to undo.
+          </p>
         </>
       )}
     </div>

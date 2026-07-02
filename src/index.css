@@ -1111,6 +1111,24 @@ a {
   color: var(--ink-soft);
   flex-shrink: 0;
 }
+.deck__undo {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  width: 44px;
+  height: 44px;
+  font-size: 20px;
+  color: var(--accent-deep);
+  flex-shrink: 0;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.deck__undo:disabled {
+  opacity: 0.35;
+  color: var(--ink-soft);
+}
+.deck__undo:not(:disabled):active {
+  transform: scale(0.92);
+}
 .deck__filters {
   width: min(92vw, 400px);
   display: flex;
@@ -1157,7 +1175,7 @@ a {
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
-  transition: transform 0.25s ease;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
   overflow: hidden;
 }
 .swipe-card__photo-frame {
@@ -1255,36 +1273,56 @@ a {
   transform: translateY(120vh) rotate(4deg);
   opacity: 0;
 }
-.swipe-card__stamp {
+/* A single centered icon-in-a-ring badge stands in for the verdict, whether
+   triggered by a drag in progress or a tap on the buttons below — it always
+   pops to full strength right when a verdict commits. */
+.swipe-card__verdict {
   position: absolute;
-  top: 18px;
-  font-size: 17px;
-  font-weight: 800;
-  padding: 6px 14px;
-  border-radius: 10px;
-  border: 3px solid;
-  transform: rotate(-8deg);
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
   pointer-events: none;
-  background: rgba(255, 253, 248, 0.9);
+  background: rgba(58, 51, 40, 0.18);
 }
-.swipe-card__stamp--yes {
-  left: 14px;
-  color: var(--accent-deep);
+.swipe-card__verdict-ring {
+  width: 84px;
+  height: 84px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 38px;
+  background: rgba(255, 253, 248, 0.96);
+  border: 4px solid;
+  box-shadow: var(--shadow);
+  animation: verdict-pop 0.2s ease both;
+}
+.swipe-card__verdict-ring--heart {
   border-color: var(--accent);
 }
-.swipe-card__stamp--skip {
-  right: 14px;
-  color: var(--ink-soft);
+.swipe-card__verdict-ring--skip {
   border-color: var(--ink-soft);
-  transform: rotate(8deg);
 }
-.swipe-card__stamp--no {
-  top: auto;
-  bottom: 84px;
-  left: 50%;
-  color: #a8412a;
+.swipe-card__verdict-ring--reject {
   border-color: #d78a76;
-  transform: translateX(-50%) rotate(-4deg);
+}
+.swipe-card__verdict-label {
+  font-size: 18px;
+  font-weight: 800;
+  color: #fffdf8;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+@keyframes verdict-pop {
+  from {
+    transform: scale(0.6);
+  }
+  to {
+    transform: scale(1);
+  }
 }
 .swipe-card__title {
   font-size: 22px;
@@ -1351,10 +1389,13 @@ a {
   border: 2px solid;
   background: var(--card);
   box-shadow: var(--shadow-soft);
-  transition: transform 0.15s ease;
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .deck__btn:hover {
   transform: scale(1.07);
+}
+.deck__btn:active {
+  transform: scale(0.9);
 }
 .deck__btn--no {
   color: #a8412a;
@@ -1634,8 +1675,31 @@ a {
   .day-cell__add {
     display: none;
   }
+  /* Browsing ideas on a phone is a horizontal swipe-through carousel per
+     category instead of one long vertical scroll — each row snaps card to
+     card, with the next one peeking to invite a swipe. */
   .card-grid {
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    grid-template-columns: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    gap: 12px;
+    margin: 0 -12px;
+    padding: 2px 12px 10px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .card-grid > .activity-card-wrap {
+    flex: 0 0 auto;
+    width: 78vw;
+    max-width: 300px;
+    scroll-snap-align: start;
+  }
+  /* Cards normally reserve horizontal touch gestures for the (desktop-only)
+     drag-to-calendar affordance; in the mobile carousel that axis is just
+     swiping between cards, so let the browser scroll it natively. */
+  .card-grid .activity-card {
+    touch-action: pan-x pan-y;
   }
 
   /* Modals become bottom sheets — easier one-handed reach and feels native. */
@@ -1711,8 +1775,8 @@ a {
 }
 
 @media (max-width: 420px) {
-  .card-grid {
-    grid-template-columns: 1fr;
+  .card-grid > .activity-card-wrap {
+    width: 84vw;
   }
   .hero__actions .primary-btn,
   .hero__actions .secondary-btn {
