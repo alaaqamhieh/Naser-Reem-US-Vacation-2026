@@ -17,6 +17,10 @@ export function QuickNav({ onOpenDeck }: { onOpenDeck: () => void }) {
         <span aria-hidden="true">💡</span>
         Ideas
       </a>
+      <a className="quick-nav__item" href="#dinner">
+        <span aria-hidden="true">🍽️</span>
+        Dinner
+      </a>
       <button type="button" className="quick-nav__item" onClick={onOpenDeck}>
         <span aria-hidden="true">🃏</span>
         Deck

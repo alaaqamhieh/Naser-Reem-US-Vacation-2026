@@ -577,6 +577,9 @@ a {
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 14px;
 }
+.card-grid--dinner {
+  align-items: start;
+}
 
 .activity-card-wrap {
   position: relative;
@@ -735,6 +738,50 @@ a {
 }
 .add-idea-btn:hover {
   background: var(--accent-soft);
+}
+
+/* =============================================================================
+   Dinner night ideas
+============================================================================= */
+.dinner-section {
+  scroll-margin-top: 20px;
+}
+.dinner-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--gold);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: var(--shadow-soft);
+}
+.dinner-card__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.dinner-card__emoji {
+  font-size: 26px;
+}
+.dinner-card__heart--on {
+  border-color: var(--cat-event);
+  background: #fdeef2;
+}
+.dinner-card__dish {
+  font-weight: 700;
+  font-size: 16px;
+}
+.dinner-card__notes {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+.dinner-card__actions {
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
 }
 
 /* =============================================================================
@@ -1714,7 +1761,8 @@ a {
     padding: 2px 12px 10px;
     -webkit-overflow-scrolling: touch;
   }
-  .card-grid > .activity-card-wrap {
+  .card-grid > .activity-card-wrap,
+  .card-grid > .dinner-card {
     flex: 0 0 auto;
     width: 78vw;
     max-width: 300px;
@@ -1800,7 +1848,8 @@ a {
 }
 
 @media (max-width: 420px) {
-  .card-grid > .activity-card-wrap {
+  .card-grid > .activity-card-wrap,
+  .card-grid > .dinner-card {
     width: 84vw;
   }
   .hero__actions .primary-btn,

@@ -13,7 +13,6 @@ export function Calendar({
   onRemoveEntry,
   onToggleCompleted,
   onOpenPicker,
-  onExportEntry,
   onEditEntry,
   onOpenDay,
   milestones,
@@ -28,7 +27,6 @@ export function Calendar({
   onRemoveEntry: (entryId: string) => void
   onToggleCompleted: (entryId: string) => void
   onOpenPicker: (date: string) => void
-  onExportEntry: (entryId: string) => void
   onEditEntry: (entryId: string) => void
   onOpenDay: (date: string) => void
   milestones: Milestone[]
@@ -80,7 +78,6 @@ export function Calendar({
                     onRemove={onRemoveEntry}
                     onToggleCompleted={onToggleCompleted}
                     onOpenPicker={() => onOpenPicker(date)}
-                    onExportEntry={onExportEntry}
                     onEditEntry={onEditEntry}
                     onOpenDay={() => onOpenDay(date)}
                     isToday={date === today}

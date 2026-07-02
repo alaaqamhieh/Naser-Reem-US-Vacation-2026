@@ -1,8 +1,8 @@
 import type { AppState } from './types'
-import { DEFAULT_SETTINGS, SEED_ACTIVITIES, SEED_ENTRIES, SEED_MILESTONES } from './data'
+import { DEFAULT_SETTINGS, SEED_ACTIVITIES, SEED_DINNER_IDEAS, SEED_ENTRIES, SEED_MILESTONES } from './data'
 
 const STORAGE_KEY = 'naser-reem-vacation/state'
-const STORAGE_VERSION = 6
+const STORAGE_VERSION = 7
 
 interface StoredState extends AppState {
   _v: number
@@ -16,6 +16,8 @@ function buildSeedState(): AppState {
     shortlist: [],
     rejected: [],
     settings: DEFAULT_SETTINGS,
+    dinnerIdeas: SEED_DINNER_IDEAS,
+    dinnerFavorites: [],
   }
 }
 
@@ -40,6 +42,8 @@ export function loadState(): AppState {
       shortlist: parsed.shortlist ?? [],
       rejected: parsed.rejected ?? [],
       settings: parsed.settings ?? DEFAULT_SETTINGS,
+      dinnerIdeas: parsed.dinnerIdeas ?? SEED_DINNER_IDEAS,
+      dinnerFavorites: parsed.dinnerFavorites ?? [],
     }
   } catch {
     return buildSeedState()

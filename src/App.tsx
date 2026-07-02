@@ -6,7 +6,6 @@
 
 import { useCallback, useMemo, useState } from 'react'
 import { loadState, saveState } from './storage'
-import { buildSingleEventIcs, downloadIcs } from './ics'
 import type { ActivityCategory, AppState, CalendarEntry } from './types'
 import { Hero } from './components/Hero'
 import { Calendar } from './components/Calendar'
@@ -21,6 +20,8 @@ import { DayDetailSheet } from './components/DayDetailSheet'
 import { EntryEditModal } from './components/EntryEditModal'
 import { MilestoneFormModal } from './components/MilestoneFormModal'
 import { SubscribeModal } from './components/SubscribeModal'
+import { DinnerSection } from './components/DinnerSection'
+import { DinnerFormModal } from './components/DinnerFormModal'
 import { isWithinRange } from './dateUtils'
 
 function newId(prefix: string): string {
@@ -49,6 +50,7 @@ export default function App() {
   // Special dates: 'closed' | 'create' | a milestone id being edited.
   const [milestoneFormMode, setMilestoneFormMode] = useState<'closed' | 'create' | string>('closed')
   const [subscribeOpen, setSubscribeOpen] = useState(false)
+  const [dinnerFormMode, setDinnerFormMode] = useState<'closed' | 'create' | string>('closed')
 
   const updateState = useCallback((updater: (prev: AppState) => AppState) => {
     setState((prev) => {
@@ -166,6 +168,49 @@ export default function App() {
     [updateState],
   )
 
+  const addDinnerIdea = useCallback(
+    (data: { dish: string; cuisine: string; emoji: string; notes: string }) => {
+      updateState((prev) => ({
+        ...prev,
+        dinnerIdeas: [...prev.dinnerIdeas, { ...data, id: newId('dinner'), isCustom: true }],
+      }))
+    },
+    [updateState],
+  )
+
+  const editDinnerIdea = useCallback(
+    (id: string, data: { dish: string; cuisine: string; emoji: string; notes: string }) => {
+      updateState((prev) => ({
+        ...prev,
+        dinnerIdeas: prev.dinnerIdeas.map((d) => (d.id === id ? { ...d, ...data } : d)),
+      }))
+    },
+    [updateState],
+  )
+
+  const deleteDinnerIdea = useCallback(
+    (id: string) => {
+      updateState((prev) => ({
+        ...prev,
+        dinnerIdeas: prev.dinnerIdeas.filter((d) => d.id !== id),
+        dinnerFavorites: prev.dinnerFavorites.filter((fid) => fid !== id),
+      }))
+    },
+    [updateState],
+  )
+
+  const toggleDinnerFavorite = useCallback(
+    (id: string) => {
+      updateState((prev) => ({
+        ...prev,
+        dinnerFavorites: prev.dinnerFavorites.includes(id)
+          ? prev.dinnerFavorites.filter((fid) => fid !== id)
+          : [...prev.dinnerFavorites, id],
+      }))
+    },
+    [updateState],
+  )
+
   const updateEntry = useCallback(
     (entryId: string, patch: Partial<Pick<CalendarEntry, 'date' | 'endDate' | 'note' | 'startTime' | 'endTime'>>) => {
       updateState((prev) => ({
@@ -179,6 +224,10 @@ export default function App() {
   const { tripStart, tripEnd, dadName, momName } = state.settings
 
   const scheduledIds = useMemo(() => new Set(state.entries.map((e) => e.activityId)), [state.entries])
+  const dinnerCuisines = useMemo(
+    () => Array.from(new Set(state.dinnerIdeas.map((d) => d.cuisine))).sort(),
+    [state.dinnerIdeas],
+  )
 
   // Deck candidates: ideas not hearted, not "not for us", and not already on
   // the calendar — skipped cards simply return the next time the deck opens.
@@ -209,12 +258,6 @@ export default function App() {
     setPendingScheduleDate(null)
   }
 
-  const handleExportEntry = (entryId: string) => {
-    const entry = state.entries.find((e) => e.id === entryId)
-    const activity = entry && state.activities.find((a) => a.id === entry.activityId)
-    if (entry && activity) downloadIcs(`${activity.title}.ics`, buildSingleEventIcs(entry, activity))
-  }
-
   // The shared calendar feed is a static file generated at build time (see
   // scripts/build-ics.ts) from the same seed data — it can't reflect anyone's
   // personal in-browser drag-and-drop edits, which live only in localStorage.
@@ -234,6 +277,10 @@ export default function App() {
   const editingActivityForEntry = editingEntry
     ? state.activities.find((a) => a.id === editingEntry.activityId)
     : undefined
+  const editingDinnerIdea =
+    dinnerFormMode !== 'closed' && dinnerFormMode !== 'create'
+      ? state.dinnerIdeas.find((d) => d.id === dinnerFormMode)
+      : undefined
 
   return (
     <div className="app">
@@ -255,7 +302,6 @@ export default function App() {
         onRemoveEntry={removeEntry}
         onToggleCompleted={toggleEntryCompleted}
         onOpenPicker={(date) => setPendingScheduleDate(date)}
-        onExportEntry={handleExportEntry}
         onEditEntry={setEditingEntryId}
         onOpenDay={setDayDetailDate}
         milestones={state.milestones}
@@ -283,6 +329,15 @@ export default function App() {
         onCreateNew={() => setActivityFormMode('create')}
         onEdit={(id) => setActivityFormMode(id)}
         onDelete={deleteActivity}
+      />
+
+      <DinnerSection
+        dinnerIdeas={state.dinnerIdeas}
+        favorites={state.dinnerFavorites}
+        onToggleFavorite={toggleDinnerFavorite}
+        onCreateNew={() => setDinnerFormMode('create')}
+        onEdit={(id) => setDinnerFormMode(id)}
+        onDelete={deleteDinnerIdea}
       />
 
       <QuickNav onOpenDeck={() => setDeckOpen(true)} />
@@ -345,7 +400,6 @@ export default function App() {
             setDayDetailDate(null)
             setEditingEntryId(id)
           }}
-          onExportEntry={handleExportEntry}
           onRemoveEntry={removeEntry}
           onAddActivity={() => {
             setPendingScheduleDate(dayDetailDate)
@@ -393,6 +447,27 @@ export default function App() {
 
       {subscribeOpen && (
         <SubscribeModal subscribeUrl={subscribeUrl} feedUrl={feedUrl} onClose={() => setSubscribeOpen(false)} />
+      )}
+
+      {dinnerFormMode !== 'closed' && (
+        <DinnerFormModal
+          initial={editingDinnerIdea}
+          cuisines={dinnerCuisines}
+          onSave={(data) => {
+            if (dinnerFormMode === 'create') addDinnerIdea(data)
+            else editDinnerIdea(dinnerFormMode, data)
+            setDinnerFormMode('closed')
+          }}
+          onDelete={
+            editingDinnerIdea
+              ? () => {
+                  deleteDinnerIdea(editingDinnerIdea.id)
+                  setDinnerFormMode('closed')
+                }
+              : undefined
+          }
+          onClose={() => setDinnerFormMode('closed')}
+        />
       )}
 
       {deckOpen && (

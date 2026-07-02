@@ -90,10 +90,6 @@ function wrapCalendar(events: string[]): string {
   ].join('\r\n')
 }
 
-export function buildSingleEventIcs(entry: CalendarEntry, activity: ActivityIdea): string {
-  return wrapCalendar([buildVEvent(entry, activity)])
-}
-
 export function buildItineraryIcs(entries: CalendarEntry[], activities: ActivityIdea[], milestones: Milestone[] = []): string {
   const byId = new Map(activities.map((a) => [a.id, a]))
   const entryEvents = entries
@@ -104,16 +100,4 @@ export function buildItineraryIcs(entries: CalendarEntry[], activities: Activity
     .filter((x): x is string => x !== null)
   const milestoneEvents = milestones.map(buildMilestoneVEvent)
   return wrapCalendar([...milestoneEvents, ...entryEvents])
-}
-
-export function downloadIcs(filename: string, content: string) {
-  const blob = new Blob([content], { type: 'text/calendar;charset=utf-8' })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = filename
-  document.body.appendChild(a)
-  a.click()
-  a.remove()
-  URL.revokeObjectURL(url)
 }

@@ -9,14 +9,12 @@ function EntryRow({
   activity,
   onToggleCompleted,
   onEdit,
-  onExport,
   onRemove,
 }: {
   entry: CalendarEntry
   activity: ActivityIdea
   onToggleCompleted: () => void
   onEdit: () => void
-  onExport: () => void
   onRemove: () => void
 }) {
   const { armed, trigger } = useConfirm(onRemove)
@@ -57,9 +55,6 @@ function EntryRow({
         <button type="button" className="icon-btn-sm" aria-label={`Edit ${activity.title}`} onClick={onEdit}>
           ✏️
         </button>
-        <button type="button" className="icon-btn-sm" aria-label={`Add ${activity.title} to your phone calendar`} onClick={onExport}>
-          📅
-        </button>
         <button
           type="button"
           className={`icon-btn-sm ${armed ? 'icon-btn-sm--confirm' : ''}`}
@@ -85,7 +80,6 @@ export function DayDetailSheet({
   onEditMilestone,
   onToggleCompleted,
   onEditEntry,
-  onExportEntry,
   onRemoveEntry,
   onAddActivity,
   onClose,
@@ -97,7 +91,6 @@ export function DayDetailSheet({
   onEditMilestone: (milestoneId: string) => void
   onToggleCompleted: (entryId: string) => void
   onEditEntry: (entryId: string) => void
-  onExportEntry: (entryId: string) => void
   onRemoveEntry: (entryId: string) => void
   onAddActivity: () => void
   onClose: () => void
@@ -140,7 +133,6 @@ export function DayDetailSheet({
                   activity={activity}
                   onToggleCompleted={() => onToggleCompleted(e.id)}
                   onEdit={() => onEditEntry(e.id)}
-                  onExport={() => onExportEntry(e.id)}
                   onRemove={() => onRemoveEntry(e.id)}
                 />
               )

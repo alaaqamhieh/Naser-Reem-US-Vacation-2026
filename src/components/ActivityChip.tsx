@@ -7,14 +7,12 @@ export function ActivityChip({
   activity,
   onRemove,
   onToggleCompleted,
-  onExport,
   onEdit,
 }: {
   entry: CalendarEntry
   activity: ActivityIdea
   onRemove: () => void
   onToggleCompleted: () => void
-  onExport: () => void
   onEdit: () => void
 }) {
   const [open, setOpen] = useState(false)
@@ -59,14 +57,6 @@ export function ActivityChip({
           <div className="chip__actions">
             <button type="button" className="chip__action" aria-label={`Edit ${activity.title} — move day, time, or note`} onClick={onEdit}>
               ✏️
-            </button>
-            <button
-              type="button"
-              className="chip__action"
-              aria-label={`Add ${activity.title} to your phone calendar`}
-              onClick={onExport}
-            >
-              📅
             </button>
             <button
               type="button"

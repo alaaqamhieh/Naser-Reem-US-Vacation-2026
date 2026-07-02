@@ -68,6 +68,18 @@ export interface TripSettings {
   momName: string
 }
 
+/** A home-cooked dinner-night idea — brainstormed by the family, browsable by
+ *  cuisine, and favorited by whoever wants to see it made during the visit. */
+export interface DinnerIdea {
+  id: string
+  dish: string
+  cuisine: string
+  emoji: string
+  notes?: string
+  /** All dinner ideas are family-editable — this is a shared brainstorm list, not a curated one. */
+  isCustom?: boolean
+}
+
 export interface AppState {
   activities: ActivityIdea[]
   entries: CalendarEntry[]
@@ -77,4 +89,7 @@ export interface AppState {
   /** Activity ids marked "not for us" in the deck — hidden from future decks, always restorable. */
   rejected: string[]
   settings: TripSettings
+  dinnerIdeas: DinnerIdea[]
+  /** Dinner idea ids favorited for the stay. */
+  dinnerFavorites: string[]
 }
