@@ -239,19 +239,6 @@ a {
   gap: 10px;
   margin-top: 8px;
 }
-.hero__subscribe-hint {
-  max-width: 460px;
-  font-size: 12.5px;
-  line-height: 1.5;
-  color: var(--ink-soft);
-  margin-top: -2px;
-}
-.hero__subscribe-fallback {
-  color: var(--accent-deep);
-  font-weight: 700;
-  text-decoration: underline;
-}
-
 /* =============================================================================
    Calendar
 ============================================================================= */
@@ -903,6 +890,44 @@ a {
   font-size: 13px;
   font-weight: 700;
   margin: -4px 0 4px;
+}
+
+.subscribe-modal__url-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.subscribe-modal__url {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+.subscribe-modal__copy {
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-size: 13px;
+  padding: 8px 14px;
+}
+.subscribe-modal__open {
+  width: 100%;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.subscribe-modal__steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+  background: var(--bg-soft);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  margin-bottom: 4px;
+}
+.subscribe-modal__steps strong {
+  color: var(--ink);
 }
 
 .color-swatches {

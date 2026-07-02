@@ -20,6 +20,7 @@ import { QuickNav } from './components/QuickNav'
 import { DayDetailSheet } from './components/DayDetailSheet'
 import { EntryEditModal } from './components/EntryEditModal'
 import { MilestoneFormModal } from './components/MilestoneFormModal'
+import { SubscribeModal } from './components/SubscribeModal'
 import { isWithinRange } from './dateUtils'
 
 function newId(prefix: string): string {
@@ -47,6 +48,7 @@ export default function App() {
   const [editingEntryId, setEditingEntryId] = useState<string | null>(null)
   // Special dates: 'closed' | 'create' | a milestone id being edited.
   const [milestoneFormMode, setMilestoneFormMode] = useState<'closed' | 'create' | string>('closed')
+  const [subscribeOpen, setSubscribeOpen] = useState(false)
 
   const updateState = useCallback((updater: (prev: AppState) => AppState) => {
     setState((prev) => {
@@ -241,9 +243,8 @@ export default function App() {
         tripStart={tripStart}
         tripEnd={tripEnd}
         today={todayIso()}
-        subscribeUrl={subscribeUrl}
-        feedUrl={feedUrl}
         onOpenDeck={() => setDeckOpen(true)}
+        onOpenSubscribe={() => setSubscribeOpen(true)}
       />
 
       <Calendar
@@ -388,6 +389,10 @@ export default function App() {
           }
           onClose={() => setMilestoneFormMode('closed')}
         />
+      )}
+
+      {subscribeOpen && (
+        <SubscribeModal subscribeUrl={subscribeUrl} feedUrl={feedUrl} onClose={() => setSubscribeOpen(false)} />
       )}
 
       {deckOpen && (
