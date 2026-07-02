@@ -1,4 +1,4 @@
-import type { ActivityIdea, CalendarEntry } from '../types'
+import type { ActivityIdea, CalendarEntry, Milestone } from '../types'
 import { dayLabel } from '../dateUtils'
 import { useEscapeToClose } from '../useEscapeToClose'
 import { useConfirm } from '../useConfirm'
@@ -75,6 +75,8 @@ export function DayDetailSheet({
   entries,
   activities,
   isHosted,
+  milestones,
+  onEditMilestone,
   onToggleCompleted,
   onEditEntry,
   onExportEntry,
@@ -86,6 +88,8 @@ export function DayDetailSheet({
   entries: CalendarEntry[]
   activities: ActivityIdea[]
   isHosted: boolean
+  milestones: Milestone[]
+  onEditMilestone: (milestoneId: string) => void
   onToggleCompleted: (entryId: string) => void
   onEditEntry: (entryId: string) => void
   onExportEntry: (entryId: string) => void
@@ -100,6 +104,13 @@ export function DayDetailSheet({
     <div className="modal-overlay" role="dialog" aria-modal="true" aria-label={`Plans for ${dayLabel(date)}`} onClick={onClose}>
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <h2 className="modal-card__title">{dayLabel(date)}</h2>
+        {milestones.map((m) => (
+          <button key={m.id} type="button" className="day-sheet__milestone" onClick={() => onEditMilestone(m.id)}>
+            <span aria-hidden="true">{m.emoji}</span>
+            <span className="day-sheet__milestone-title">{m.title}</span>
+            <span aria-hidden="true">✏️</span>
+          </button>
+        ))}
         {isHosted && <p className="day-sheet__hosted">✈️ Alaa is in Jordan — the brothers are hosting this day.</p>}
 
         {entries.length === 0 ? (

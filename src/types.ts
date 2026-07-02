@@ -29,6 +29,8 @@ export interface ActivityIdea {
   stretchTrip?: boolean
   /** Path under public/ to a real photo of the place, e.g. "photos/outer-banks.jpg". */
   photo?: string
+  /** Extra gallery photos to flip through on the swipe card, cover excluded. */
+  photos?: string[]
 }
 
 export interface CalendarEntry {
@@ -44,9 +46,20 @@ export interface CalendarEntry {
   completed?: boolean
 }
 
+/** A special date — flights, travel windows, anniversaries. Can span days. */
+export interface Milestone {
+  id: string
+  title: string
+  emoji: string
+  /** ISO dates, inclusive range; single-day when start === end. */
+  start: string
+  end: string
+}
+
 export interface AppState {
   activities: ActivityIdea[]
   entries: CalendarEntry[]
+  milestones: Milestone[]
   /** Activity ids Naser & Reem hearted in the swipe deck, in the order added. */
   shortlist: string[]
   /** Activity ids marked "not for us" in the deck — hidden from future decks, always restorable. */

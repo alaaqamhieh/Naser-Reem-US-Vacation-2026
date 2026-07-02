@@ -1,5 +1,5 @@
 import { groupByMonth, isWithinRange, monthLabel, tripDates, weekdayOf } from '../dateUtils'
-import type { ActivityIdea, CalendarEntry } from '../types'
+import type { ActivityIdea, CalendarEntry, Milestone } from '../types'
 import { DayCell } from './DayCell'
 
 // Weeks run Monday–Sunday.
@@ -18,6 +18,9 @@ export function Calendar({
   onExportEntry,
   onEditEntry,
   onOpenDay,
+  milestones,
+  onAddMilestone,
+  onEditMilestone,
   today,
 }: {
   tripStart: string
@@ -33,6 +36,9 @@ export function Calendar({
   onExportEntry: (entryId: string) => void
   onEditEntry: (entryId: string) => void
   onOpenDay: (date: string) => void
+  milestones: Milestone[]
+  onAddMilestone: () => void
+  onEditMilestone: (milestoneId: string) => void
   today?: string
 }) {
   const dates = tripDates(tripStart, tripEnd)
@@ -47,7 +53,12 @@ export function Calendar({
 
   return (
     <section className="calendar-section" id="calendar" aria-label="Trip calendar">
-      <h2 className="section-title">The Calendar</h2>
+      <div className="section-title-row">
+        <h2 className="section-title">The Calendar</h2>
+        <button type="button" className="secondary-btn section-title-row__action" onClick={onAddMilestone}>
+          ✨ Add a special date
+        </button>
+      </div>
       <p className="section-hint">
         Drag an idea from below onto any day — or tap a day to see and change its plans.
       </p>
@@ -84,6 +95,10 @@ export function Calendar({
                     onOpenDay={() => onOpenDay(date)}
                     isToday={date === today}
                     isHosted={isWithinRange(date, hostedStart, hostedEnd)}
+                    milestones={milestones
+                      .filter((m) => isWithinRange(date, m.start, m.end))
+                      .map((m) => ({ m, isStart: date === m.start }))}
+                    onEditMilestone={onEditMilestone}
                   />
                 ))}
               </div>

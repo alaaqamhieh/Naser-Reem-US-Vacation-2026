@@ -1,4 +1,4 @@
-import type { ActivityIdea, CalendarEntry } from '../types'
+import type { ActivityIdea, CalendarEntry, Milestone } from '../types'
 import { ActivityChip } from './ActivityChip'
 
 export function DayCell({
@@ -11,6 +11,8 @@ export function DayCell({
   onExportEntry,
   onEditEntry,
   onOpenDay,
+  milestones,
+  onEditMilestone,
   isToday,
   isHosted,
 }: {
@@ -23,6 +25,8 @@ export function DayCell({
   onExportEntry: (entryId: string) => void
   onEditEntry: (entryId: string) => void
   onOpenDay: () => void
+  milestones: { m: Milestone; isStart: boolean }[]
+  onEditMilestone: (milestoneId: string) => void
   isToday?: boolean
   isHosted?: boolean
 }) {
@@ -43,6 +47,19 @@ export function DayCell({
           ✈️
         </div>
       )}
+      {milestones.map(({ m, isStart }) => (
+        <button
+          key={m.id}
+          type="button"
+          className={`milestone-ribbon ${isStart ? '' : 'milestone-ribbon--cont'}`}
+          title={m.title}
+          aria-label={`Special date: ${m.title}. Tap to edit.`}
+          onClick={() => onEditMilestone(m.id)}
+        >
+          <span aria-hidden="true">{m.emoji}</span>
+          {isStart && <span className="milestone-ribbon__title">{m.title}</span>}
+        </button>
+      ))}
       <div className="day-cell__chips">
         {entries.map((e) => {
           const activity = byId.get(e.activityId)

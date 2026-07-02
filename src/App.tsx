@@ -20,6 +20,7 @@ import { ShortlistSection } from './components/ShortlistSection'
 import { QuickNav } from './components/QuickNav'
 import { DayDetailSheet } from './components/DayDetailSheet'
 import { EntryEditModal } from './components/EntryEditModal'
+import { MilestoneFormModal } from './components/MilestoneFormModal'
 import { isWithinRange } from './dateUtils'
 
 function newId(prefix: string): string {
@@ -45,6 +46,8 @@ export default function App() {
   // Tap-a-day view (phones) and per-entry editing.
   const [dayDetailDate, setDayDetailDate] = useState<string | null>(null)
   const [editingEntryId, setEditingEntryId] = useState<string | null>(null)
+  // Special dates: 'closed' | 'create' | a milestone id being edited.
+  const [milestoneFormMode, setMilestoneFormMode] = useState<'closed' | 'create' | string>('closed')
 
   const updateState = useCallback((updater: (prev: AppState) => AppState) => {
     setState((prev) => {
@@ -101,6 +104,7 @@ export default function App() {
   const deleteActivity = useCallback(
     (id: string) => {
       updateState((prev) => ({
+        ...prev,
         activities: prev.activities.filter((a) => a.id !== id),
         entries: prev.entries.filter((e) => e.activityId !== id),
         shortlist: prev.shortlist.filter((sid) => sid !== id),
@@ -133,6 +137,30 @@ export default function App() {
           : [...prev.rejected, activityId],
         shortlist: prev.shortlist.filter((id) => id !== activityId),
       }))
+    },
+    [updateState],
+  )
+
+  const addMilestone = useCallback(
+    (data: { title: string; emoji: string; start: string; end: string }) => {
+      updateState((prev) => ({ ...prev, milestones: [...prev.milestones, { ...data, id: newId('m') }] }))
+    },
+    [updateState],
+  )
+
+  const editMilestone = useCallback(
+    (id: string, data: { title: string; emoji: string; start: string; end: string }) => {
+      updateState((prev) => ({
+        ...prev,
+        milestones: prev.milestones.map((m) => (m.id === id ? { ...m, ...data } : m)),
+      }))
+    },
+    [updateState],
+  )
+
+  const deleteMilestone = useCallback(
+    (id: string) => {
+      updateState((prev) => ({ ...prev, milestones: prev.milestones.filter((m) => m.id !== id) }))
     },
     [updateState],
   )
@@ -194,6 +222,10 @@ export default function App() {
       : undefined
 
   const editingEntry = editingEntryId ? state.entries.find((e) => e.id === editingEntryId) : undefined
+  const editingMilestone =
+    milestoneFormMode !== 'closed' && milestoneFormMode !== 'create'
+      ? state.milestones.find((m) => m.id === milestoneFormMode)
+      : undefined
   const editingActivityForEntry = editingEntry
     ? state.activities.find((a) => a.id === editingEntry.activityId)
     : undefined
@@ -223,6 +255,9 @@ export default function App() {
         onExportEntry={handleExportEntry}
         onEditEntry={setEditingEntryId}
         onOpenDay={setDayDetailDate}
+        milestones={state.milestones}
+        onAddMilestone={() => setMilestoneFormMode('create')}
+        onEditMilestone={setMilestoneFormMode}
         today={todayIso()}
       />
 
@@ -296,6 +331,11 @@ export default function App() {
           entries={state.entries.filter((e) => e.date === dayDetailDate)}
           activities={state.activities}
           isHosted={isWithinRange(dayDetailDate, JORDAN_TRIP_START, JORDAN_TRIP_END)}
+          milestones={state.milestones.filter((m) => isWithinRange(dayDetailDate, m.start, m.end))}
+          onEditMilestone={(id) => {
+            setDayDetailDate(null)
+            setMilestoneFormMode(id)
+          }}
           onToggleCompleted={toggleEntryCompleted}
           onEditEntry={(id) => {
             setDayDetailDate(null)
@@ -322,6 +362,28 @@ export default function App() {
             setEditingEntryId(null)
           }}
           onClose={() => setEditingEntryId(null)}
+        />
+      )}
+
+      {milestoneFormMode !== 'closed' && (
+        <MilestoneFormModal
+          initial={editingMilestone}
+          tripStart={TRIP_START}
+          tripEnd={TRIP_END}
+          onSave={(data) => {
+            if (milestoneFormMode === 'create') addMilestone(data)
+            else editMilestone(milestoneFormMode, data)
+            setMilestoneFormMode('closed')
+          }}
+          onDelete={
+            editingMilestone
+              ? () => {
+                  deleteMilestone(editingMilestone.id)
+                  setMilestoneFormMode('closed')
+                }
+              : undefined
+          }
+          onClose={() => setMilestoneFormMode('closed')}
         />
       )}
 

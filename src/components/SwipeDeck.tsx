@@ -61,6 +61,8 @@ export function SwipeDeck({
   const [heartedThisRun, setHeartedThisRun] = useState(0)
   const [exiting, setExiting] = useState<Verdict | null>(null)
   const [drag, setDrag] = useState<{ dx: number; dy: number } | null>(null)
+  // Which picture of the top card's gallery is showing; resets on advance.
+  const [photoIndex, setPhotoIndex] = useState(0)
 
   const cardRef = useRef<HTMLDivElement>(null)
   const start = useRef<{ x: number; y: number } | null>(null)
@@ -103,6 +105,7 @@ export function SwipeDeck({
     setSeen((prev) => new Set(prev).add(activityId))
     setExiting(null)
     setDrag(null)
+    setPhotoIndex(0)
   }
 
   const commit = (verdict: Verdict) => {
@@ -251,15 +254,49 @@ export function SwipeDeck({
                       </div>
                     </>
                   )}
-                  {a.photo && (
-                    <img
-                      className="swipe-card__photo"
-                      src={`${import.meta.env.BASE_URL}${a.photo}`}
-                      alt=""
-                      loading={depth === 0 ? 'eager' : 'lazy'}
-                      draggable={false}
-                    />
-                  )}
+                  {a.photo &&
+                    (() => {
+                      const gallery = [a.photo, ...(a.photos ?? [])]
+                      const idx = isTop ? Math.min(photoIndex, gallery.length - 1) : 0
+                      return (
+                        <div className="swipe-card__photo-frame">
+                          <img
+                            className="swipe-card__photo"
+                            src={`${import.meta.env.BASE_URL}${gallery[idx]}`}
+                            alt=""
+                            loading={depth === 0 ? 'eager' : 'lazy'}
+                            draggable={false}
+                          />
+                          {isTop && gallery.length > 1 && (
+                            <>
+                              <button
+                                type="button"
+                                className="swipe-card__photo-nav swipe-card__photo-nav--prev"
+                                aria-label="Previous picture"
+                                onPointerDown={(e) => e.stopPropagation()}
+                                onClick={() => setPhotoIndex((i) => (i - 1 + gallery.length) % gallery.length)}
+                              >
+                                ‹
+                              </button>
+                              <button
+                                type="button"
+                                className="swipe-card__photo-nav swipe-card__photo-nav--next"
+                                aria-label="Next picture"
+                                onPointerDown={(e) => e.stopPropagation()}
+                                onClick={() => setPhotoIndex((i) => (i + 1) % gallery.length)}
+                              >
+                                ›
+                              </button>
+                              <div className="swipe-card__photo-dots" aria-hidden="true">
+                                {gallery.map((g, i) => (
+                                  <span key={g} className={`swipe-card__photo-dot ${i === idx ? 'swipe-card__photo-dot--on' : ''}`} />
+                                ))}
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      )
+                    })()}
                   <div className="swipe-card__body">
                     <h3 className="swipe-card__title">
                       <span aria-hidden="true">{a.emoji}</span> {a.title}

@@ -44,6 +44,10 @@ export function DragItem({
   }
 
   const onDown = (e: ReactPointerEvent) => {
+    // Touch: don't capture at all — fingers are for scrolling the page, and a
+    // grazed card must never hijack the gesture or pop a picker. Scheduling on
+    // touch happens through the card's explicit "Pick a day" button instead.
+    if (e.pointerType === 'touch') return
     start.current = { x: e.clientX, y: e.clientY }
     moved.current = false
     ref.current?.setPointerCapture(e.pointerId)

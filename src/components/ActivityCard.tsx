@@ -63,6 +63,9 @@ export function ActivityCard({
         )}
         <span className="activity-card__category">{CATEGORY_LABELS[activity.category]}</span>
       </DragItem>
+      <button type="button" className="activity-card__schedule-btn" onClick={() => onChoose(null)}>
+        📅 Pick a day
+      </button>
       <div className="activity-card__corner-actions">
         {activity.isCustom && (
           <>
