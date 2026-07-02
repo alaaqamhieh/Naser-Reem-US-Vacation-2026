@@ -2,7 +2,8 @@ import { groupByMonth, isWithinRange, monthLabel, tripDates, weekdayOf } from '.
 import type { ActivityIdea, CalendarEntry } from '../types'
 import { DayCell } from './DayCell'
 
-const WEEKDAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+// Weeks run Monday–Sunday.
+const WEEKDAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
 export function Calendar({
   tripStart,
@@ -15,6 +16,8 @@ export function Calendar({
   onToggleCompleted,
   onOpenPicker,
   onExportEntry,
+  onEditEntry,
+  onOpenDay,
   today,
 }: {
   tripStart: string
@@ -28,6 +31,8 @@ export function Calendar({
   onToggleCompleted: (entryId: string) => void
   onOpenPicker: (date: string) => void
   onExportEntry: (entryId: string) => void
+  onEditEntry: (entryId: string) => void
+  onOpenDay: (date: string) => void
   today?: string
 }) {
   const dates = tripDates(tripStart, tripEnd)
@@ -44,11 +49,11 @@ export function Calendar({
     <section className="calendar-section" id="calendar" aria-label="Trip calendar">
       <h2 className="section-title">The Calendar</h2>
       <p className="section-hint">
-        Drag an idea from below onto any day — or tap a day's <strong>+</strong> to pick one.
+        Drag an idea from below onto any day — or tap a day to see and change its plans.
       </p>
-      <p className="calendar-swipe-hint" aria-hidden="true">👉 Swipe sideways to see the whole week</p>
       {months.map((group) => {
-        const firstWeekday = weekdayOf(group.dates[0])
+        // Monday-first: shift JS's Sunday-first weekday index.
+        const firstWeekday = (weekdayOf(group.dates[0]) + 6) % 7
         const leadingBlanks = Array.from({ length: firstWeekday })
         return (
           <div className="month-grid" key={`${group.year}-${group.month}`}>
@@ -75,6 +80,8 @@ export function Calendar({
                     onToggleCompleted={onToggleCompleted}
                     onOpenPicker={() => onOpenPicker(date)}
                     onExportEntry={onExportEntry}
+                    onEditEntry={onEditEntry}
+                    onOpenDay={() => onOpenDay(date)}
                     isToday={date === today}
                     isHosted={isWithinRange(date, hostedStart, hostedEnd)}
                   />

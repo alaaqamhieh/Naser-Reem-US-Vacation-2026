@@ -293,6 +293,9 @@ a {
   border-color: var(--accent);
   box-shadow: 0 0 0 2px var(--accent);
 }
+.day-cell__tap {
+  display: none;
+}
 .day-cell__num {
   font-size: 12px;
   font-weight: 700;
@@ -525,8 +528,22 @@ a {
 .activity-card--event .activity-card {
   border-top-color: var(--cat-event);
 }
+.activity-card--has-photo {
+  overflow: hidden; /* keep the photo inside the rounded corners */
+}
+.activity-card__photo {
+  margin: -16px -16px 4px;
+  width: calc(100% + 32px);
+  height: 110px;
+  object-fit: cover;
+  pointer-events: none;
+}
 .activity-card__emoji {
   font-size: 28px;
+}
+.activity-card--has-photo .activity-card__emoji {
+  font-size: 19px;
+  line-height: 1;
 }
 .activity-card__title {
   font-weight: 700;
@@ -851,6 +868,43 @@ a {
   background: var(--bg-soft);
 }
 
+.rejected-list {
+  margin-top: 18px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  background: var(--bg-soft);
+}
+.rejected-list__summary {
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+.rejected-list__items {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.rejected-list__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+.rejected-list__title {
+  flex: 1;
+  min-width: 0;
+}
+.rejected-list__restore {
+  padding: 6px 12px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
 /* =============================================================================
    Swipe deck (full-screen idea deck)
 ============================================================================= */
@@ -909,6 +963,32 @@ a {
   color: var(--ink-soft);
   flex-shrink: 0;
 }
+.deck__filters {
+  width: min(92vw, 400px);
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+.deck__filter {
+  border: 1.5px solid var(--line);
+  background: var(--card);
+  border-radius: 999px;
+  padding: 5px 13px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.deck__filter--on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
 .deck__stage {
   position: relative;
   width: min(92vw, 400px);
@@ -924,14 +1004,29 @@ a {
   border-top: 5px solid var(--ink-soft);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  padding: 26px 22px 20px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
   transition: transform 0.25s ease;
+  overflow: hidden;
+}
+.swipe-card__photo {
+  width: 100%;
+  height: 42%;
+  max-height: 225px;
+  object-fit: cover;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+.swipe-card__body {
+  padding: 16px 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  flex: 1;
+  min-height: 0;
   overflow: hidden;
 }
 .swipe-card--big-trip { border-top-color: var(--cat-big-trip); }
@@ -948,14 +1043,19 @@ a {
   transform: scale(0.91) translateY(24px);
   z-index: -2;
 }
-.swipe-card--exit-right {
+.swipe-card--exit-heart {
   transition: transform 0.3s ease-in, opacity 0.3s ease-in;
   transform: translateX(120vw) rotate(20deg);
   opacity: 0;
 }
-.swipe-card--exit-left {
+.swipe-card--exit-skip {
   transition: transform 0.3s ease-in, opacity 0.3s ease-in;
   transform: translateX(-120vw) rotate(-20deg);
+  opacity: 0;
+}
+.swipe-card--exit-reject {
+  transition: transform 0.3s ease-in, opacity 0.3s ease-in;
+  transform: translateY(120vh) rotate(4deg);
   opacity: 0;
 }
 .swipe-card__stamp {
@@ -975,19 +1075,23 @@ a {
   color: var(--accent-deep);
   border-color: var(--accent);
 }
-.swipe-card__stamp--no {
+.swipe-card__stamp--skip {
   right: 14px;
-  color: #a8412a;
-  border-color: #d78a76;
+  color: var(--ink-soft);
+  border-color: var(--ink-soft);
   transform: rotate(8deg);
 }
-.swipe-card__emoji {
-  font-size: 54px;
-  line-height: 1;
+.swipe-card__stamp--no {
+  top: auto;
+  bottom: 84px;
+  left: 50%;
+  color: #a8412a;
+  border-color: #d78a76;
+  transform: translateX(-50%) rotate(-4deg);
 }
 .swipe-card__title {
-  font-size: 25px;
-  line-height: 1.2;
+  font-size: 22px;
+  line-height: 1.25;
 }
 .swipe-card__meta {
   display: flex;
@@ -1024,8 +1128,20 @@ a {
 }
 .deck__actions {
   display: flex;
-  gap: 26px;
-  margin-top: 18px;
+  gap: 22px;
+  margin-top: 16px;
+  align-items: flex-start;
+}
+.deck__action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.deck__btn-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--ink-soft);
 }
 .deck__btn {
   width: 64px;
@@ -1046,6 +1162,12 @@ a {
 .deck__btn--no {
   color: #a8412a;
   border-color: #d78a76;
+  font-size: 22px;
+}
+.deck__btn--skip {
+  color: var(--ink-soft);
+  border-color: var(--line);
+  font-size: 28px;
 }
 .deck__btn--yes {
   border-color: var(--accent);
@@ -1091,8 +1213,91 @@ a {
 .quick-nav {
   display: none;
 }
-.calendar-swipe-hint {
-  display: none;
+
+/* =============================================================================
+   Day detail sheet
+============================================================================= */
+.day-sheet__hosted {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  background: var(--sky-soft);
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+.day-sheet__entries {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+}
+.day-sheet__entry {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-soft);
+  border-left: 3px solid var(--ink-soft);
+  border-radius: var(--radius-sm);
+  padding: 10px 10px 10px 8px;
+}
+.day-sheet__entry--big-trip { border-left-color: var(--cat-big-trip); }
+.day-sheet__entry--garden { border-left-color: var(--cat-garden); }
+.day-sheet__entry--food { border-left-color: var(--cat-food); }
+.day-sheet__entry--home { border-left-color: var(--cat-home); }
+.day-sheet__entry--local { border-left-color: var(--cat-local); }
+.day-sheet__entry--event { border-left-color: var(--cat-event); }
+.day-sheet__entry--done {
+  opacity: 0.6;
+}
+.day-sheet__entry--done .day-sheet__entry-title {
+  text-decoration: line-through;
+}
+.day-sheet__done {
+  background: none;
+  border: none;
+  font-size: 17px;
+  padding: 6px;
+  color: var(--ink-soft);
+}
+.day-sheet__entry-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.day-sheet__entry-title {
+  font-weight: 700;
+  font-size: 14.5px;
+}
+.day-sheet__entry-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.day-sheet__entry-note {
+  font-size: 12.5px;
+  color: var(--ink-soft);
+}
+.day-sheet__entry-actions {
+  display: flex;
+  gap: 5px;
+}
+.icon-btn-sm--confirm {
+  background: #fbe6e1;
+  color: #a8412a;
+  border-color: #d78a76;
+  font-weight: 700;
+}
+.form-row {
+  display: flex;
+  gap: 10px;
+}
+.form-row .form-field {
+  flex: 1;
 }
 
 /* =============================================================================
@@ -1162,32 +1367,64 @@ a {
   .activity-card {
     touch-action: pan-y;
   }
-  /* Below this width, 7 even columns crush chip text unreadably small —
-     scroll horizontally at a readable column width instead. */
-  .month-grid__scroll {
-    overflow-x: auto;
-    padding-bottom: 6px;
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x proximity;
-  }
-  .day-cell {
-    scroll-snap-align: start;
-  }
-  .day-cell__add {
-    width: 36px;
-    height: 36px;
-  }
+  /* Compact month view: the whole week fits the screen, days show just
+     emoji chips, and tapping a day opens its full plans in a bottom sheet. */
   .month-grid__weekdays,
   .month-grid__days {
-    grid-template-columns: repeat(7, minmax(108px, 1fr));
-    min-width: 680px;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 3px;
   }
-  .calendar-swipe-hint {
+  .month-grid__weekday {
+    font-size: 10px;
+    letter-spacing: 0;
+  }
+  .day-cell {
+    min-height: 58px;
+    padding: 4px 3px 3px;
+    gap: 2px;
+    border-radius: 8px;
+  }
+  .day-cell__tap {
     display: block;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--ink-soft);
-    margin: -12px 0 12px;
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: none;
+    border: none;
+    border-radius: inherit;
+    padding: 0;
+  }
+  .day-cell__num {
+    font-size: 10.5px;
+  }
+  .day-cell__hosted-badge {
+    top: 3px;
+    right: 3px;
+    font-size: 9px;
+  }
+  .day-cell__chips {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 2px;
+    align-content: flex-start;
+  }
+  .day-cell .chip {
+    border-left-width: 2px;
+    border-radius: 4px;
+  }
+  .day-cell .chip__main {
+    padding: 1px 3px;
+    pointer-events: none;
+    font-size: 11px;
+  }
+  .day-cell .chip__title,
+  .day-cell .chip__done,
+  .day-cell .chip__details,
+  .day-cell .chip__actions {
+    display: none;
+  }
+  .day-cell__add {
+    display: none;
   }
   .card-grid {
     grid-template-columns: 1fr 1fr;

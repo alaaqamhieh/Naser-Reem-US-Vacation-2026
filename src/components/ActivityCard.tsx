@@ -30,13 +30,22 @@ export function ActivityCard({
       <DragItem
         ariaLabel={`${activity.title}. Drag onto a day, or tap to choose a day.`}
         onChoose={onChoose}
-        className="activity-card"
+        className={`activity-card ${activity.photo ? 'activity-card--has-photo' : ''}`}
       >
+        {activity.photo && (
+          <img
+            className="activity-card__photo"
+            src={`${import.meta.env.BASE_URL}${activity.photo}`}
+            alt=""
+            loading="lazy"
+            draggable={false}
+          />
+        )}
         <span className="activity-card__emoji" aria-hidden="true">
           {activity.emoji}
         </span>
         <span className="activity-card__title">{activity.title}</span>
-        {activity.driveTime && <span className="activity-card__drive">🚗 {activity.driveTime}</span>}
+        {activity.driveTime && <span className="activity-card__drive">🚗 {activity.driveTime} from home</span>}
         <span className="activity-card__desc">{activity.description}</span>
         {activity.tags && activity.tags.length > 0 && (
           <span className="activity-card__tags">{activity.tags.join(' · ')}</span>

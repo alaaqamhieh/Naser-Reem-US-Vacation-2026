@@ -18,6 +18,9 @@ import { ActivityFormModal } from './components/ActivityFormModal'
 import { SwipeDeck } from './components/SwipeDeck'
 import { ShortlistSection } from './components/ShortlistSection'
 import { QuickNav } from './components/QuickNav'
+import { DayDetailSheet } from './components/DayDetailSheet'
+import { EntryEditModal } from './components/EntryEditModal'
+import { isWithinRange } from './dateUtils'
 
 function newId(prefix: string): string {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`
@@ -39,6 +42,9 @@ export default function App() {
   const [activityFormMode, setActivityFormMode] = useState<'closed' | 'create' | string>('closed')
   // The swipe deck is a full-screen mode, separate from the modals above.
   const [deckOpen, setDeckOpen] = useState(false)
+  // Tap-a-day view (phones) and per-entry editing.
+  const [dayDetailDate, setDayDetailDate] = useState<string | null>(null)
+  const [editingEntryId, setEditingEntryId] = useState<string | null>(null)
 
   const updateState = useCallback((updater: (prev: AppState) => AppState) => {
     setState((prev) => {
@@ -98,6 +104,7 @@ export default function App() {
         activities: prev.activities.filter((a) => a.id !== id),
         entries: prev.entries.filter((e) => e.activityId !== id),
         shortlist: prev.shortlist.filter((sid) => sid !== id),
+        rejected: prev.rejected.filter((rid) => rid !== id),
       }))
     },
     [updateState],
@@ -110,6 +117,31 @@ export default function App() {
         shortlist: prev.shortlist.includes(activityId)
           ? prev.shortlist.filter((id) => id !== activityId)
           : [...prev.shortlist, activityId],
+        // Hearting something also clears any earlier "not for us".
+        rejected: prev.rejected.filter((id) => id !== activityId),
+      }))
+    },
+    [updateState],
+  )
+
+  const toggleRejected = useCallback(
+    (activityId: string) => {
+      updateState((prev) => ({
+        ...prev,
+        rejected: prev.rejected.includes(activityId)
+          ? prev.rejected.filter((id) => id !== activityId)
+          : [...prev.rejected, activityId],
+        shortlist: prev.shortlist.filter((id) => id !== activityId),
+      }))
+    },
+    [updateState],
+  )
+
+  const updateEntry = useCallback(
+    (entryId: string, patch: Partial<Pick<CalendarEntry, 'date' | 'note' | 'startTime' | 'endTime'>>) => {
+      updateState((prev) => ({
+        ...prev,
+        entries: prev.entries.map((e) => (e.id === entryId ? { ...e, ...patch } : e)),
       }))
     },
     [updateState],
@@ -117,12 +149,13 @@ export default function App() {
 
   const scheduledIds = useMemo(() => new Set(state.entries.map((e) => e.activityId)), [state.entries])
 
-  // Deck candidates: ideas not yet hearted and not already on the calendar,
-  // so the deck stays a pure discovery tool.
+  // Deck candidates: ideas not hearted, not "not for us", and not already on
+  // the calendar — skipped cards simply return the next time the deck opens.
   const deckCandidates = useMemo(() => {
     const hearted = new Set(state.shortlist)
-    return state.activities.filter((a) => !scheduledIds.has(a.id) && !hearted.has(a.id))
-  }, [state.activities, scheduledIds, state.shortlist])
+    const rejected = new Set(state.rejected)
+    return state.activities.filter((a) => !scheduledIds.has(a.id) && !hearted.has(a.id) && !rejected.has(a.id))
+  }, [state.activities, scheduledIds, state.shortlist, state.rejected])
 
   const goToShortlist = () => {
     setDeckOpen(false)
@@ -160,6 +193,11 @@ export default function App() {
       ? state.activities.find((a) => a.id === activityFormMode)
       : undefined
 
+  const editingEntry = editingEntryId ? state.entries.find((e) => e.id === editingEntryId) : undefined
+  const editingActivityForEntry = editingEntry
+    ? state.activities.find((a) => a.id === editingEntry.activityId)
+    : undefined
+
   return (
     <div className="app">
       <Hero
@@ -183,15 +221,19 @@ export default function App() {
         onToggleCompleted={toggleEntryCompleted}
         onOpenPicker={(date) => setPendingScheduleDate(date)}
         onExportEntry={handleExportEntry}
+        onEditEntry={setEditingEntryId}
+        onOpenDay={setDayDetailDate}
         today={todayIso()}
       />
 
       <ShortlistSection
         shortlist={state.shortlist}
+        rejected={state.rejected}
         activities={state.activities}
         scheduledIds={scheduledIds}
         onPickDay={(id) => setPendingScheduleActivityId(id)}
         onUnheart={toggleShortlist}
+        onRestore={toggleRejected}
         onOpenDeck={() => setDeckOpen(true)}
       />
 
@@ -248,11 +290,48 @@ export default function App() {
         />
       )}
 
+      {dayDetailDate && (
+        <DayDetailSheet
+          date={dayDetailDate}
+          entries={state.entries.filter((e) => e.date === dayDetailDate)}
+          activities={state.activities}
+          isHosted={isWithinRange(dayDetailDate, JORDAN_TRIP_START, JORDAN_TRIP_END)}
+          onToggleCompleted={toggleEntryCompleted}
+          onEditEntry={(id) => {
+            setDayDetailDate(null)
+            setEditingEntryId(id)
+          }}
+          onExportEntry={handleExportEntry}
+          onRemoveEntry={removeEntry}
+          onAddActivity={() => {
+            setPendingScheduleDate(dayDetailDate)
+            setDayDetailDate(null)
+          }}
+          onClose={() => setDayDetailDate(null)}
+        />
+      )}
+
+      {editingEntry && editingActivityForEntry && (
+        <EntryEditModal
+          entry={editingEntry}
+          activity={editingActivityForEntry}
+          tripStart={TRIP_START}
+          tripEnd={TRIP_END}
+          onSave={(patch) => {
+            updateEntry(editingEntry.id, patch)
+            setEditingEntryId(null)
+          }}
+          onClose={() => setEditingEntryId(null)}
+        />
+      )}
+
       {deckOpen && (
         <SwipeDeck
           candidates={deckCandidates}
           heartedTotal={state.shortlist.length}
+          rejectedTotal={state.rejected.length}
           onHeart={toggleShortlist}
+          onReject={toggleRejected}
           onClose={() => setDeckOpen(false)}
           onGoToShortlist={goToShortlist}
         />

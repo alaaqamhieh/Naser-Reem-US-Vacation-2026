@@ -2,14 +2,14 @@ import type { AppState } from './types'
 import { SEED_ACTIVITIES, SEED_ENTRIES } from './data'
 
 const STORAGE_KEY = 'naser-reem-vacation/state'
-const STORAGE_VERSION = 3
+const STORAGE_VERSION = 4
 
 interface StoredState extends AppState {
   _v: number
 }
 
 function buildSeedState(): AppState {
-  return { activities: SEED_ACTIVITIES, entries: SEED_ENTRIES, shortlist: [] }
+  return { activities: SEED_ACTIVITIES, entries: SEED_ENTRIES, shortlist: [], rejected: [] }
 }
 
 export function loadState(): AppState {
@@ -26,7 +26,12 @@ export function loadState(): AppState {
       saveState(seeded)
       return seeded
     }
-    return { activities: parsed.activities, entries: parsed.entries, shortlist: parsed.shortlist ?? [] }
+    return {
+      activities: parsed.activities,
+      entries: parsed.entries,
+      shortlist: parsed.shortlist ?? [],
+      rejected: parsed.rejected ?? [],
+    }
   } catch {
     return buildSeedState()
   }
