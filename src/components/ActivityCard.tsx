@@ -1,5 +1,7 @@
 import type { ActivityCategory, ActivityIdea } from '../types'
 import { DragItem } from './DragItem'
+import { StarRating } from './StarRating'
+import { googleMapsUrl } from '../mapsLink'
 
 const CATEGORY_LABELS: Record<ActivityCategory, string> = {
   'big-trip': 'Big Trip',
@@ -45,6 +47,7 @@ export function ActivityCard({
           {activity.emoji}
         </span>
         <span className="activity-card__title">{activity.title}</span>
+        {!!activity.popularity && <StarRating value={activity.popularity} />}
         {activity.driveTime && <span className="activity-card__drive">🚗 {activity.driveTime} from home</span>}
         <span className="activity-card__desc">{activity.description}</span>
         {activity.tags && activity.tags.length > 0 && (
@@ -66,6 +69,15 @@ export function ActivityCard({
       <button type="button" className="activity-card__schedule-btn" onClick={() => onChoose(null)}>
         📅 Pick a day
       </button>
+      <a
+        href={googleMapsUrl(activity.mapQuery ?? activity.title)}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="activity-card__maps-btn"
+        onClick={(e) => e.stopPropagation()}
+      >
+        📍 Maps
+      </a>
       <div className="activity-card__corner-actions">
         {activity.isCustom && (
           <>

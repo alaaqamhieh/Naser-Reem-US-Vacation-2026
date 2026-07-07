@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointer
 import type { ActivityCategory, ActivityIdea } from '../types'
 import { useEscapeToClose } from '../useEscapeToClose'
 import { useBodyScrollLock } from '../useBodyScrollLock'
+import { StarRating } from './StarRating'
 
 const CATEGORY_LABELS: Record<ActivityCategory, string> = {
   'big-trip': 'Big Trip',
@@ -337,6 +338,7 @@ export function SwipeDeck({
                     <h3 className="swipe-card__title">
                       <span aria-hidden="true">{a.emoji}</span> {a.title}
                     </h3>
+                    {!!a.popularity && <StarRating value={a.popularity} />}
                     {(a.driveTime || a.stretchTrip) && (
                       <p className="swipe-card__meta">
                         {a.driveTime && <span className="swipe-card__drive">🚗 {a.driveTime} from home</span>}

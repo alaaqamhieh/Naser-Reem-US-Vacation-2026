@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { ActivityIdea, CalendarEntry } from '../types'
 import { useConfirm } from '../useConfirm'
+import { googleMapsUrl } from '../mapsLink'
 
 export function ActivityChip({
   entry,
@@ -58,6 +59,16 @@ export function ActivityChip({
             <button type="button" className="chip__action" aria-label={`Edit ${activity.title} — move day, time, or note`} onClick={onEdit}>
               ✏️
             </button>
+            <a
+              href={googleMapsUrl(activity.mapQuery ?? activity.title)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="chip__action"
+              aria-label={`Open ${activity.title} in Google Maps`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              📍
+            </a>
             <button
               type="button"
               className={`chip__action ${armed ? 'chip__action--confirm' : ''}`}

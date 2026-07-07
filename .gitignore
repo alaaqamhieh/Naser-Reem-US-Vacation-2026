@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Local secrets (Google Maps/Places key, Firebase DB URL) — see .env.example
+.env
+.env.*
+!.env.example
+
 # Generated at build time by scripts/build-ics.ts — always fresh from src/data.ts
 public/itinerary.ics
 

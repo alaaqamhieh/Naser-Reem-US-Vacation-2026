@@ -672,6 +672,57 @@ a {
   background: #f6e3dc;
   color: #a04e2e;
 }
+.star-rating {
+  color: var(--gold);
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+.star-rating__off {
+  color: var(--line);
+}
+
+.place-search__form {
+  display: flex;
+  gap: 8px;
+}
+.place-search__form .form-input {
+  flex: 1;
+}
+.place-search__results {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+.place-search__result {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg-soft);
+}
+.place-search__result-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.place-search__result-name {
+  font-weight: 700;
+}
+.place-search__result-address {
+  font-size: 12.5px;
+  color: var(--ink-soft);
+}
+.place-search__result-rating {
+  font-size: 12.5px;
+  color: var(--gold);
+  font-weight: 700;
+}
 .activity-card__drive {
   font-size: 12px;
   font-weight: 700;
@@ -715,6 +766,23 @@ a {
 .activity-card__schedule-btn:hover {
   background: var(--accent-soft);
 }
+.activity-card__maps-btn {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  border: 1.5px solid var(--line);
+  background: var(--card);
+  color: var(--ink-soft);
+  border-radius: 999px;
+  padding: 7px 12px;
+  font-size: 12.5px;
+  font-weight: 700;
+  box-shadow: var(--shadow-soft);
+  text-decoration: none;
+}
+.activity-card__maps-btn:hover {
+  background: var(--bg-soft);
+}
 
 .drag-item {
   cursor: grab;
@@ -726,6 +794,11 @@ a {
   opacity: 0.95;
 }
 
+.library-add-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
 .add-idea-btn {
   margin-top: 8px;
   width: 100%;
@@ -735,6 +808,9 @@ a {
   padding: 16px;
   font-weight: 700;
   color: var(--accent-deep);
+}
+.library-add-row .add-idea-btn {
+  margin-top: 0;
 }
 .add-idea-btn:hover {
   background: var(--accent-soft);
@@ -1831,6 +1907,9 @@ a {
   .app {
     padding: 16px 12px calc(78px + env(safe-area-inset-bottom));
     gap: 40px;
+  }
+  .library-add-row {
+    flex-direction: column;
   }
   /* background-attachment: fixed repaints on every scroll frame on mobile
      and is buggy in iOS Safari — let it scroll normally there. */

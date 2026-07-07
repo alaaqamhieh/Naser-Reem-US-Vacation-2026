@@ -29,6 +29,12 @@ export function DinnerSection({
       const favs = dinnerIdeas.filter((d) => favorites.includes(d.id))
       return favs.length > 0 ? [{ cuisine: 'Favorites', items: favs }] : []
     }
+    if (active === 'top') {
+      const top = dinnerIdeas
+        .filter((d) => (d.popularity ?? 0) >= 4)
+        .sort((a, b) => (b.popularity ?? 0) - (a.popularity ?? 0))
+      return top.length > 0 ? [{ cuisine: '⭐ Top Rated', items: top }] : []
+    }
     const cs = active === 'all' ? cuisines : cuisines.filter((c) => c === active)
     return cs
       .map((c) => ({ cuisine: c, items: dinnerIdeas.filter((d) => d.cuisine === c) }))
@@ -59,6 +65,14 @@ export function DinnerSection({
         >
           ❤️ Favorites
         </button>
+        <button
+          type="button"
+          className={`filter-chip ${active === 'top' ? 'filter-chip--on' : ''}`}
+          aria-pressed={active === 'top'}
+          onClick={() => setActive('top')}
+        >
+          ⭐ Top rated
+        </button>
         {cuisines.map((c) => (
           <button
             key={c}
@@ -74,13 +88,17 @@ export function DinnerSection({
 
       {grouped.length === 0 && (
         <p className="empty-state">
-          {active === 'favorites' ? "No favorites yet — heart a dish to add it here." : 'No dinner ideas yet.'}
+          {active === 'favorites'
+            ? 'No favorites yet — heart a dish to add it here.'
+            : active === 'top'
+              ? 'No top-rated dishes yet — rate one by editing it.'
+              : 'No dinner ideas yet.'}
         </p>
       )}
 
       {grouped.map((g) => (
         <div className="library-group" key={g.cuisine}>
-          {active === 'all' && <h3 className="library-group__label">{g.cuisine}</h3>}
+          {(active === 'all' || active === 'top') && <h3 className="library-group__label">{g.cuisine}</h3>}
           <div className="card-grid card-grid--dinner">
             {g.items.map((idea) => (
               <DinnerCard
@@ -92,7 +110,7 @@ export function DinnerSection({
                 onDelete={idea.isCustom ? () => onDelete(idea.id) : undefined}
               />
             ))}
-            {active !== 'favorites' && (
+            {active !== 'favorites' && active !== 'top' && (
               <button
                 type="button"
                 className="dinner-card dinner-card--add"

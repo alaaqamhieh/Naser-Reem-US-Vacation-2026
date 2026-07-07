@@ -3,6 +3,7 @@ import { dayLabel } from '../dateUtils'
 import { milestoneColor } from '../milestoneColors'
 import { useEscapeToClose } from '../useEscapeToClose'
 import { useConfirm } from '../useConfirm'
+import { googleMapsUrl } from '../mapsLink'
 
 function EntryRow({
   entry,
@@ -55,6 +56,15 @@ function EntryRow({
         <button type="button" className="icon-btn-sm" aria-label={`Edit ${activity.title}`} onClick={onEdit}>
           ✏️
         </button>
+        <a
+          href={googleMapsUrl(activity.mapQuery ?? activity.title)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="icon-btn-sm"
+          aria-label={`Open ${activity.title} in Google Maps`}
+        >
+          📍
+        </a>
         <button
           type="button"
           className={`icon-btn-sm ${armed ? 'icon-btn-sm--confirm' : ''}`}

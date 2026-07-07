@@ -31,6 +31,10 @@ export interface ActivityIdea {
   photo?: string
   /** Extra gallery photos to flip through on the swipe card, cover excluded. */
   photos?: string[]
+  /** 1-5 star popularity — manually curated, or pulled from a real Google rating when added via place search. */
+  popularity?: number
+  /** Search text for the "Open in Google Maps" link; falls back to the title when absent. */
+  mapQuery?: string
 }
 
 export interface CalendarEntry {
@@ -78,6 +82,10 @@ export interface DinnerIdea {
   notes?: string
   /** Path under public/ to a real photo of the dish, e.g. "photos/dinner/pho.jpg". */
   photo?: string
+  /** 1-5 star popularity — manually curated. */
+  popularity?: number
+  /** Search text for the "Find a restaurant" Google Maps link; falls back to a generated one when absent. */
+  mapQuery?: string
   /** All dinner ideas are family-editable — this is a shared brainstorm list, not a curated one. */
   isCustom?: boolean
 }

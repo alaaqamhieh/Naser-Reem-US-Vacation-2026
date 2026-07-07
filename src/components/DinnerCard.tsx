@@ -1,4 +1,6 @@
 import type { DinnerIdea } from '../types'
+import { StarRating } from './StarRating'
+import { googleMapsUrl } from '../mapsLink'
 
 export function DinnerCard({
   idea,
@@ -33,21 +35,29 @@ export function DinnerCard({
         </button>
       </div>
       <span className="dinner-card__dish">{idea.dish}</span>
+      {!!idea.popularity && <StarRating value={idea.popularity} />}
       {idea.notes && <span className="dinner-card__notes">{idea.notes}</span>}
-      {(onEdit || onDelete) && (
-        <div className="dinner-card__actions">
-          {onEdit && (
-            <button type="button" className="icon-btn-sm" aria-label={`Edit ${idea.dish}`} onClick={onEdit}>
-              ✏️
-            </button>
-          )}
-          {onDelete && (
-            <button type="button" className="icon-btn-sm" aria-label={`Delete ${idea.dish}`} onClick={onDelete}>
-              🗑
-            </button>
-          )}
-        </div>
-      )}
+      <div className="dinner-card__actions">
+        <a
+          href={googleMapsUrl(idea.mapQuery ?? `${idea.dish} restaurant near Richmond VA`)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="icon-btn-sm"
+          aria-label={`Find a restaurant serving ${idea.dish} on Google Maps`}
+        >
+          📍
+        </a>
+        {onEdit && (
+          <button type="button" className="icon-btn-sm" aria-label={`Edit ${idea.dish}`} onClick={onEdit}>
+            ✏️
+          </button>
+        )}
+        {onDelete && (
+          <button type="button" className="icon-btn-sm" aria-label={`Delete ${idea.dish}`} onClick={onDelete}>
+            🗑
+          </button>
+        )}
+      </div>
     </div>
   )
 }

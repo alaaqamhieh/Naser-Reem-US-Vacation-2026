@@ -20,6 +20,7 @@ export function Library({
   onCreateNew,
   onEdit,
   onDelete,
+  onSearchPlace,
 }: {
   activities: ActivityIdea[]
   shortlist: string[]
@@ -28,12 +29,17 @@ export function Library({
   onCreateNew: () => void
   onEdit: (activityId: string) => void
   onDelete: (activityId: string) => void
+  onSearchPlace: () => void
 }) {
   const shortlisted = new Set(shortlist)
-  const [active, setActive] = useState<ActivityCategory | 'all'>('all')
+  const [active, setActive] = useState<ActivityCategory | 'all' | 'top'>('all')
   const { query, setQuery, filtered } = useActivitySearch(activities)
 
   const grouped = useMemo(() => {
+    if (active === 'top') {
+      const top = filtered.filter((a) => (a.popularity ?? 0) >= 4).sort((a, b) => (b.popularity ?? 0) - (a.popularity ?? 0))
+      return top.length > 0 ? [{ key: 'top', label: '⭐ Top Rated', items: top }] : []
+    }
     const cats = active === 'all' ? CATEGORIES : CATEGORIES.filter((c) => c.key === active)
     return cats
       .map((c) => ({ ...c, items: filtered.filter((a) => a.category === c.key) }))
@@ -65,6 +71,14 @@ export function Library({
         >
           All
         </button>
+        <button
+          type="button"
+          className={`filter-chip ${active === 'top' ? 'filter-chip--on' : ''}`}
+          aria-pressed={active === 'top'}
+          onClick={() => setActive('top')}
+        >
+          ⭐ Top rated
+        </button>
         {CATEGORIES.map((c) => (
           <button
             key={c.key}
@@ -82,7 +96,7 @@ export function Library({
 
       {grouped.map((g) => (
         <div className="library-group" key={g.key}>
-          {active === 'all' && <h3 className="library-group__label">{g.label}</h3>}
+          {(active === 'all' || active === 'top') && <h3 className="library-group__label">{g.label}</h3>}
           <div className="card-grid">
             {g.items.map((a) => (
               <ActivityCard
@@ -99,9 +113,14 @@ export function Library({
         </div>
       ))}
 
-      <button type="button" className="add-idea-btn" onClick={onCreateNew}>
-        + Add your own idea
-      </button>
+      <div className="library-add-row">
+        <button type="button" className="add-idea-btn" onClick={onCreateNew}>
+          + Add your own idea
+        </button>
+        <button type="button" className="add-idea-btn" onClick={onSearchPlace}>
+          🔍 Search for a place
+        </button>
+      </div>
     </section>
   )
 }

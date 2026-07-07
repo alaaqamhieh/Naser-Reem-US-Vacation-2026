@@ -95,6 +95,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     description: "Step into \"old America\" — colonial trades, tall ships, and the spot where the nation began. A great overnight for Naser's first taste of US history.",
     tags: ['overnight'],
     firstVisitHighlight: true,
+    popularity: 5,
   },
   {
     id: 'virginia-beach-norfolk',
@@ -127,6 +128,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     driveTime: '~2h',
     description: 'Mountain overlooks, wildflowers, and easy scenic stops along a 105-mile ridge-top drive — no real hiking required.',
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'longwood-gardens',
@@ -149,6 +151,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     driveTime: '~2.25h',
     description: 'The National Mall, the monuments, and a free Smithsonian museum, then a stroll through historic Alexandria.',
     firstVisitHighlight: true,
+    popularity: 5,
   },
   {
     id: 'annapolis',
@@ -160,6 +163,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     driveTime: '~3h',
     description: 'A pretty waterfront city with historic streets and boats — a gentler alternative to a full D.C. day.',
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'natural-bridge-lexington',
@@ -184,6 +188,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     description: "Wide Atlantic beaches, climbable lighthouses, the Wright Brothers' first-flight memorial, and wild horses roaming the sand at Corolla — a classic American beach escape.",
     tags: ['overnight'],
     firstVisitHighlight: true,
+    popularity: 5,
   },
   {
     id: 'busch-gardens',
@@ -205,6 +210,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     driveTime: '~3.5h',
     description: 'Wild ponies on a barrier island, a storybook lighthouse, and quiet beaches — much of it enjoyable right from the car or a gentle boardwalk.',
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'luray-caverns',
@@ -226,6 +232,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     driveTime: '~2h',
     description: "George Washington's riverside home — rolling gardens, the famous back porch view over the Potomac, and living history all around.",
     firstVisitHighlight: true,
+    popularity: 5,
   },
   {
     id: 'new-river-gorge',
@@ -237,6 +244,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     driveTime: '~4h',
     description: "America's newest national park — the iconic bridge and canyon views from Grandview and the step-free \"Gentle Trail\" overlook. Big scenery, easy on the knees.",
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'harpers-ferry',
@@ -259,6 +267,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     description: 'Rolling farmland, horse-drawn buggies, covered bridges, and farm markets — a peaceful window into a different America. Pairs well with Longwood or Hershey.',
     easyPace: true,
     firstVisitHighlight: true,
+    popularity: 5,
   },
   {
     id: 'hershey-pa',
@@ -279,6 +288,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     driveTime: '~3h',
     description: 'A flat waterfront promenade, historic ships, and one of the best aquariums in the country — dolphins, sharks, and a tropical rainforest indoors.',
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'great-falls',
@@ -290,6 +300,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     driveTime: '~2.5h',
     description: 'The Potomac crashing through a rocky gorge, seen from paved overlooks just steps from the parking lot — huge scenery for very little walking.',
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'biltmore-asheville',
@@ -302,6 +313,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     description: "America's largest home, with legendary gardens by the designer of Central Park and Blue Ridge mountain views — a garden lover's dream weekend.",
     tags: ['overnight'],
     stretchTrip: true,
+    popularity: 5,
   },
   {
     id: 'new-york-city',
@@ -315,6 +327,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     tags: ['overnight'],
     stretchTrip: true,
     firstVisitHighlight: true,
+    popularity: 5,
   },
 
   {
@@ -328,6 +341,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     description: 'A free car ferry gliding across the James River — ride it with the windows down on the way to Williamsburg or Surry, and watch Jamestown appear off the bow. A tiny adventure that costs nothing.',
     easyPace: true,
     firstVisitHighlight: true,
+    popularity: 5,
   },
   {
     id: 'tangier-island',
@@ -339,6 +353,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     driveTime: '~2h + ferry',
     description: "A slow boat across the Chesapeake to a tiny island where golf carts outnumber cars and the crab boats rule — one of the most unusual day trips in America. Seated ferry ride both ways.",
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'philadelphia',
@@ -351,6 +366,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     description: 'The Liberty Bell, Independence Hall, and a famous cheesesteak — where the Declaration was signed. Pairs beautifully with Longwood Gardens for a Pennsylvania weekend.',
     tags: ['overnight'],
     firstVisitHighlight: true,
+    popularity: 5,
   },
   {
     id: 'gettysburg',
@@ -362,6 +378,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     driveTime: '~3.5h',
     description: 'Rolling battlefield country you can tour entirely by car with an audio guide — big history and big views, no walking required.',
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'ocean-city-md',
@@ -384,6 +401,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     description: "A gentler, prettier boardwalk town — beach mornings, tax-free outlet shopping, and Thrasher's fries at sunset.",
     tags: ['overnight'],
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'smith-mountain-lake',
@@ -394,6 +412,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     driveTime: '~3h',
     description: "Virginia's biggest lake — rent a pontoon boat for a lazy afternoon on the water, mountains all around. Pure rest.",
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'mabry-mill',
@@ -405,6 +424,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     driveTime: '~3h',
     description: "America's favorite scenic drive, ending at the most photographed spot on the Parkway — a historic water mill with a pond-side restaurant serving buckwheat pancakes.",
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'virginia-safari-park',
@@ -416,6 +436,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     description: 'A 180-acre safari you drive through in your own car — zebras, camels, and elk eating right out of your bucket through the window. Zero walking, maximum delight.',
     easyPace: true,
     firstVisitHighlight: true,
+    popularity: 5,
   },
   {
     id: 'cass-railroad',
@@ -427,6 +448,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     driveTime: '~4.25h',
     description: 'A century-old steam locomotive climbing through mountain meadows to a bald-knob overlook — sit back and let the train do the work.',
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'blackwater-falls',
@@ -446,6 +468,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     driveTime: '~1.5h',
     description: "A sleepy riverside beach town on the Potomac — golf-cart streets, a small sandy beach, and waterfront crab shacks. Virginia's best-kept lazy-day secret.",
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'amtrak-dc',
@@ -457,6 +480,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     description: "Ride a real American train from Richmond straight into Union Station's grand hall — no traffic, no parking, just views. A different way to do a D.C. day.",
     easyPace: true,
     firstVisitHighlight: true,
+    popularity: 5,
   },
   {
     id: 'potomac-cruise',
@@ -467,6 +491,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     driveTime: '~2.25h',
     description: 'Dinner on the water as the monuments light up and slide past the windows — the most effortless way to see Washington glow at night.',
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'carter-mountain',
@@ -477,6 +502,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     driveTime: '~1.5h',
     description: 'A mountaintop orchard above Charlottesville — July peaches straight off the tree, warm apple cider doughnuts, and one of the best sunset views in Virginia.',
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'lake-anna',
@@ -487,6 +513,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     driveTime: '~1.25h',
     description: 'A big friendly lake an hour away — a sandy public beach, picnic shelters, and warm shallow water. An easy full-day escape.',
     easyPace: true,
+    popularity: 4,
   },
 
   // ----- Gardens -----
@@ -500,6 +527,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     driveTime: '~30 min',
     description: "Richmond's own garden, recently doubled in size — a domed conservatory, butterflies, and (on select Thursdays) evening hours with live music.",
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'maymont',
@@ -511,6 +539,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     driveTime: '~25 min',
     description: 'A free Richmond estate with a Japanese garden, Italian garden, and wildlife — easy, beautiful, and close to home.',
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'norfolk-botanical-garden',
@@ -521,6 +550,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     driveTime: '~1.5h',
     description: '60+ themed gardens that pair perfectly with a Virginia Beach weekend morning.',
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'us-botanic-garden',
@@ -532,6 +562,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     description: "The free conservatory from your first US trip — worth revisiting and showing Naser, paired with a D.C. day.",
     easyPace: true,
     firstVisitHighlight: true,
+    popularity: 5,
   },
 
 
@@ -545,6 +576,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     driveTime: '~2h',
     description: 'Sarah P. Duke Gardens — 55 free acres of terraced flowers, an Asian arboretum with a red bridge over the pond, and shaded paths. One of the finest gardens in the South.',
     easyPace: true,
+    popularity: 4,
   },
 
   // ----- Food experiences -----
@@ -564,6 +596,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     category: 'food',
     description: "A Brazilian steakhouse rodízio — tableside carved meats and a big salad bar. A true \"never had this before\" experience.",
     firstVisitHighlight: true,
+    popularity: 5,
   },
   {
     id: 'hibachi-night',
@@ -580,6 +613,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     category: 'food',
     description: 'A pretty Asian-European fusion tea & dessert spot — lovely for a relaxed, photogenic outing.',
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'sweet-treat-dessert',
@@ -597,6 +631,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     category: 'food',
     description: "Sugar Shack's famous fresh doughnuts, then Gelati Celesti ice cream — a silly, delicious evening tour of Richmond's sweetest spots.",
     easyPace: true,
+    popularity: 4,
   },
 
   {
@@ -607,6 +642,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     category: 'food',
     description: 'The great Chesapeake ritual — a paper-covered table, wooden mallets, a pile of steamed blue crabs, and an hour of happy cracking. Messy, memorable, delicious.',
     firstVisitHighlight: true,
+    popularity: 5,
   },
   {
     id: 'waffle-house-run',
@@ -617,6 +653,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     driveTime: '~10 min',
     description: "A gloriously unfancy American institution — hash browns \"scattered, smothered and covered\" at a counter that never closes. The most America thing on this list.",
     firstVisitHighlight: true,
+    popularity: 5,
   },
   {
     id: 'krispy-kreme-hot-light',
@@ -627,6 +664,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     driveTime: '~15 min',
     description: 'When the red neon HOT sign glows, doughnuts are rolling off the glazing waterfall that minute — grab a dozen while they are still warm.',
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'cheesecake-factory',
@@ -667,6 +705,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     category: 'home',
     description: 'Halal burgers, corn, watermelon, and lemonade — the classic American backyard summer, made at home.',
     firstVisitHighlight: true,
+    popularity: 5,
   },
   {
     id: 'friends-potluck',
@@ -711,6 +750,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     category: 'home',
     description: 'Invite the crew over for cards, tarneeb, and board games — snacks on the table and bragging rights on the line.',
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'brunch-gathering',
@@ -720,6 +760,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     category: 'home',
     description: 'A slow Saturday brunch with friends — pancakes and eggs next to zaatar and labneh, and nowhere anyone needs to be.',
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'smores-bonfire',
@@ -730,6 +771,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     description: 'A summer-night fire, marshmallows on sticks, and the great American s\'more — graham cracker, melted chocolate, and perfect char.',
     easyPace: true,
     firstVisitHighlight: true,
+    popularity: 5,
   },
   {
     id: 'sunset-picnic',
@@ -739,6 +781,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     category: 'home',
     description: 'A blanket, a basket, golden light on the James — the simplest evening on this whole list, and maybe the nicest.',
     easyPace: true,
+    popularity: 4,
   },
 
   // ----- Local Richmond -----
@@ -767,6 +810,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     driveTime: '~25 min',
     description: 'A scenic riverside walk with skyline views — lovely at sunset.',
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'hollywood-cemetery',
@@ -776,6 +820,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     category: 'local',
     description: 'A peaceful, beautiful 135-acre garden cemetery overlooking the James — history and views in one easy walk.',
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'river-city-roll',
@@ -798,6 +843,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     category: 'local',
     description: 'A browse-everything American grocery-store experience — surprisingly fun for first-time visitors.',
     firstVisitHighlight: true,
+    popularity: 5,
   },
   {
     id: 'byrd-theatre',
@@ -807,6 +853,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     category: 'local',
     description: 'A historic 1928 cinema with its mighty Wurlitzer organ playing before the show — a true Richmond classic.',
     firstVisitHighlight: true,
+    popularity: 5,
   },
   {
     id: 'shopping-gifts-night',
@@ -835,6 +882,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     description: 'Dinner on the Georgetown waterfront, then a slow evening drive past the lit-up monuments — all the D.C. magic with almost no walking.',
     easyPace: true,
     firstVisitHighlight: true,
+    popularity: 5,
   },
   {
     id: 'berry-picking',
@@ -844,6 +892,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     driveTime: '~20 min',
     description: 'Pick-your-own berries at a farm just outside Richmond — shaded rows, fresh air, and a pie project for the afternoon.',
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'james-river-cruise',
@@ -854,6 +903,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     driveTime: '~20 min',
     description: 'A relaxed narrated cruise on the James — city views, herons, and history, all from a comfortable seat on the water.',
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'farmers-market',
@@ -863,6 +913,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     category: 'local',
     description: 'Saturday morning in Forest Hill Park — Virginia peaches, fresh bread, flowers, and live music under the trees.',
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'capitol-canal-walk',
@@ -872,6 +923,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     category: 'local',
     description: "Jefferson's gleaming white Capitol and a gentle stroll along the downtown canal — Richmond's history at an easy pace.",
     easyPace: true,
+    popularity: 4,
   },
 
   {
@@ -893,6 +945,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     driveTime: '~20 min',
     description: 'Folding chairs, a cooler, and lines in the water at a quiet lake or river pier — the catching is optional, the calm is guaranteed.',
     easyPace: true,
+    popularity: 4,
   },
 
   // ----- Dated events -----
@@ -903,6 +956,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     category: 'event',
     description: 'Vendors, live music, and food at 17th Street Market, every 2nd Saturday — easy and local.',
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'dragon-boat-festival',
@@ -920,6 +974,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     category: 'event',
     description: "Richmond's biggest local festival — music, shopping, food, and free admission, right in Carytown.",
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'lewis-ginter-flowers-after-5',
@@ -928,6 +983,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     category: 'event',
     description: 'Select Thursday evenings with the garden open until 9pm and live music — the easiest beautiful evening of the trip.',
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'lewis-ginter-concert',
@@ -936,6 +992,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     category: 'event',
     description: 'An outdoor evening concert in the garden (doors around 6pm) — bring a blanket and relax under the trees.',
     easyPace: true,
+    popularity: 4,
   },
   {
     id: 'richmond-jazz-festival',
@@ -963,6 +1020,7 @@ export const SEED_ACTIVITIES: ActivityIdea[] = [
     description: 'A double feature under the stars at a classic American drive-in — watched comfortably from the car with snacks from the retro concession stand.',
     easyPace: true,
     firstVisitHighlight: true,
+    popularity: 5,
   }
 ]
 

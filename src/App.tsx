@@ -4,9 +4,11 @@
 //  and persists to localStorage via storage.ts.
 // =============================================================================
 
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { loadState, saveState } from './storage'
-import type { ActivityCategory, AppState, CalendarEntry } from './types'
+import { loadRemote, saveRemote } from './remoteSync'
+import type { ActivityCategory, ActivityIdea, AppState, CalendarEntry } from './types'
+import type { PlaceResult } from './googlePlaces'
 import { Hero } from './components/Hero'
 import { Calendar } from './components/Calendar'
 import { Library } from './components/Library'
@@ -22,6 +24,7 @@ import { MilestoneFormModal } from './components/MilestoneFormModal'
 import { SubscribeModal } from './components/SubscribeModal'
 import { DinnerSection } from './components/DinnerSection'
 import { DinnerFormModal } from './components/DinnerFormModal'
+import { PlaceSearchModal } from './components/PlaceSearchModal'
 import { isWithinRange } from './dateUtils'
 
 function newId(prefix: string): string {
@@ -52,13 +55,36 @@ export default function App() {
   const [subscribeOpen, setSubscribeOpen] = useState(false)
   const [dinnerFormMode, setDinnerFormMode] = useState<'closed' | 'create' | string>('closed')
   const [dinnerFormCuisine, setDinnerFormCuisine] = useState<string | undefined>(undefined)
+  const [placeSearchOpen, setPlaceSearchOpen] = useState(false)
+
+  // Guards the initial remote fetch from clobbering an edit the user made
+  // in the brief window before it resolves.
+  const editedSinceMount = useRef(false)
 
   const updateState = useCallback((updater: (prev: AppState) => AppState) => {
+    editedSinceMount.current = true
     setState((prev) => {
       const next = updater(prev)
       saveState(next)
+      saveRemote(next)
       return next
     })
+  }, [])
+
+  // On load, this browser's local copy paints instantly; a shared remote
+  // copy (if configured — see remoteSync.ts) then takes over so everyone's
+  // edits show up everywhere, without blocking the first paint on a fetch.
+  useEffect(() => {
+    let cancelled = false
+    loadRemote().then((remote) => {
+      if (cancelled || !remote || editedSinceMount.current) return
+      setState(remote)
+      saveState(remote)
+    })
+    return () => {
+      cancelled = true
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const addEntry = useCallback(
@@ -91,6 +117,24 @@ export default function App() {
       const id = newId('custom')
       updateState((prev) => ({ ...prev, activities: [...prev.activities, { ...data, id, isCustom: true }] }))
       return id
+    },
+    [updateState],
+  )
+
+  const addPlaceActivity = useCallback(
+    (place: PlaceResult) => {
+      const id = newId('place')
+      const activity: ActivityIdea = {
+        id,
+        title: place.name,
+        emoji: place.emoji,
+        category: place.category,
+        description: place.address,
+        isCustom: true,
+        mapQuery: place.mapQuery,
+        popularity: typeof place.rating === 'number' ? Math.round(place.rating) : undefined,
+      }
+      updateState((prev) => ({ ...prev, activities: [...prev.activities, activity] }))
     },
     [updateState],
   )
@@ -330,6 +374,7 @@ export default function App() {
         onCreateNew={() => setActivityFormMode('create')}
         onEdit={(id) => setActivityFormMode(id)}
         onDelete={deleteActivity}
+        onSearchPlace={() => setPlaceSearchOpen(true)}
       />
 
       <DinnerSection
@@ -451,6 +496,16 @@ export default function App() {
 
       {subscribeOpen && (
         <SubscribeModal subscribeUrl={subscribeUrl} feedUrl={feedUrl} onClose={() => setSubscribeOpen(false)} />
+      )}
+
+      {placeSearchOpen && (
+        <PlaceSearchModal
+          onAdd={(place) => {
+            addPlaceActivity(place)
+            setPlaceSearchOpen(false)
+          }}
+          onClose={() => setPlaceSearchOpen(false)}
+        />
       )}
 
       {dinnerFormMode !== 'closed' && (
