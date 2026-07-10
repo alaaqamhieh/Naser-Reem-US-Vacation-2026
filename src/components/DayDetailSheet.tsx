@@ -1,5 +1,5 @@
 import type { ActivityIdea, CalendarEntry, Milestone } from '../types'
-import { dayLabel } from '../dateUtils'
+import { dayLabel, formatTime12h } from '../dateUtils'
 import { milestoneColor } from '../milestoneColors'
 import { useEscapeToClose } from '../useEscapeToClose'
 import { useConfirm } from '../useConfirm'
@@ -44,8 +44,8 @@ function EntryRow({
             )}
             {entry.startTime && (
               <span className="chip__time">
-                {entry.startTime}
-                {entry.endTime ? `–${entry.endTime}` : ''}
+                {formatTime12h(entry.startTime)}
+                {entry.endTime ? `–${formatTime12h(entry.endTime)}` : ''}
               </span>
             )}
             {entry.note && <span className="day-sheet__entry-note">{entry.note}</span>}

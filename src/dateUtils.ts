@@ -34,6 +34,14 @@ export function dayLabel(date: string): string {
   return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' })
 }
 
+/** Formats a stored 24h 'HH:mm' time as 12h with AM/PM, e.g. '14:00' -> '2:00 PM'. */
+export function formatTime12h(time: string): string {
+  const [h, m] = time.split(':').map(Number)
+  const period = h < 12 ? 'AM' : 'PM'
+  const hour12 = h % 12 === 0 ? 12 : h % 12
+  return `${hour12}:${String(m).padStart(2, '0')} ${period}`
+}
+
 /** All ISO dates from start to end, inclusive. */
 export function tripDates(start: string, end: string): string[] {
   const dates: string[] = []

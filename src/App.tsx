@@ -11,6 +11,7 @@ import type { ActivityCategory, ActivityIdea, AppState, CalendarEntry } from './
 import type { PlaceResult } from './googlePlaces'
 import { Hero } from './components/Hero'
 import { Calendar } from './components/Calendar'
+import { TimelineView } from './components/TimelineView'
 import { Library } from './components/Library'
 import { DatePickerModal } from './components/DatePickerModal'
 import { ActivityPickerModal } from './components/ActivityPickerModal'
@@ -44,7 +45,8 @@ export default function App() {
   // Modal state: at most one of these is active at a time.
   const [pendingScheduleActivityId, setPendingScheduleActivityId] = useState<string | null>(null)
   const [pendingScheduleDate, setPendingScheduleDate] = useState<string | null>(null)
-  const [activityFormMode, setActivityFormMode] = useState<'closed' | 'create' | string>('closed')
+  const [activityFormMode, setActivityFormMode] = useState<'closed' | 'create' | 'create-for-date' | string>('closed')
+  const [createPrefillTitle, setCreatePrefillTitle] = useState('')
   // The swipe deck is a full-screen mode, separate from the modals above.
   const [deckOpen, setDeckOpen] = useState(false)
   // Tap-a-day view (phones) and per-entry editing.
@@ -56,6 +58,7 @@ export default function App() {
   const [dinnerFormMode, setDinnerFormMode] = useState<'closed' | 'create' | string>('closed')
   const [dinnerFormCuisine, setDinnerFormCuisine] = useState<string | undefined>(undefined)
   const [placeSearchOpen, setPlaceSearchOpen] = useState(false)
+  const [calendarView, setCalendarView] = useState<'calendar' | 'timeline'>('calendar')
 
   // Guards the initial remote fetch from clobbering an edit the user made
   // in the brief window before it resolves.
@@ -310,7 +313,7 @@ export default function App() {
   const subscribeUrl = feedUrl.replace(/^https?:/, 'webcal:')
 
   const editingActivity =
-    activityFormMode !== 'closed' && activityFormMode !== 'create'
+    activityFormMode !== 'closed' && activityFormMode !== 'create' && activityFormMode !== 'create-for-date'
       ? state.activities.find((a) => a.id === activityFormMode)
       : undefined
 
@@ -339,21 +342,72 @@ export default function App() {
         onOpenSubscribe={() => setSubscribeOpen(true)}
       />
 
-      <Calendar
-        tripStart={tripStart}
-        tripEnd={tripEnd}
-        entries={state.entries}
-        activities={state.activities}
-        onRemoveEntry={removeEntry}
-        onToggleCompleted={toggleEntryCompleted}
-        onOpenPicker={(date) => setPendingScheduleDate(date)}
-        onEditEntry={setEditingEntryId}
-        onOpenDay={setDayDetailDate}
-        milestones={state.milestones}
-        onAddMilestone={() => setMilestoneFormMode('create')}
-        onEditMilestone={setMilestoneFormMode}
-        today={todayIso()}
-      />
+      <section className="calendar-view-toggle-row" aria-label="Calendar view">
+        <div className="view-toggle" role="tablist">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={calendarView === 'calendar'}
+            className={calendarView === 'calendar' ? 'on' : ''}
+            onClick={() => setCalendarView('calendar')}
+          >
+            🗓️ Calendar
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={calendarView === 'timeline'}
+            className={calendarView === 'timeline' ? 'on' : ''}
+            onClick={() => setCalendarView('timeline')}
+          >
+            📜 Timeline
+          </button>
+        </div>
+      </section>
+
+      {calendarView === 'calendar' ? (
+        <Calendar
+          tripStart={tripStart}
+          tripEnd={tripEnd}
+          entries={state.entries}
+          activities={state.activities}
+          onRemoveEntry={removeEntry}
+          onToggleCompleted={toggleEntryCompleted}
+          onOpenPicker={(date) => setPendingScheduleDate(date)}
+          onEditEntry={setEditingEntryId}
+          onOpenDay={setDayDetailDate}
+          milestones={state.milestones}
+          onAddMilestone={() => setMilestoneFormMode('create')}
+          onEditMilestone={setMilestoneFormMode}
+          today={todayIso()}
+        />
+      ) : (
+        <section className="calendar-section" id="calendar" aria-label="Trip timeline">
+          <div className="section-title-row">
+            <h2 className="section-title">The Calendar</h2>
+            <button
+              type="button"
+              className="secondary-btn section-title-row__action"
+              onClick={() => setMilestoneFormMode('create')}
+            >
+              ✨ Add a special date
+            </button>
+          </div>
+          <p className="section-hint">Tap "+ Add to this day" on any day to plan it out.</p>
+          <TimelineView
+            tripStart={tripStart}
+            tripEnd={tripEnd}
+            entries={state.entries}
+            activities={state.activities}
+            onRemoveEntry={removeEntry}
+            onToggleCompleted={toggleEntryCompleted}
+            onOpenPicker={(date) => setPendingScheduleDate(date)}
+            onEditEntry={setEditingEntryId}
+            milestones={state.milestones}
+            today={todayIso()}
+          />
+        </section>
+      )}
 
       <ShortlistSection
         shortlist={state.shortlist}
@@ -403,11 +457,15 @@ export default function App() {
         />
       )}
 
-      {pendingScheduleDate && (
+      {pendingScheduleDate && activityFormMode === 'closed' && (
         <ActivityPickerModal
           date={pendingScheduleDate}
           activities={state.activities}
           onPick={handleActivityPicked}
+          onCreateNew={(prefillTitle) => {
+            setCreatePrefillTitle(prefillTitle)
+            setActivityFormMode('create-for-date')
+          }}
           onClose={() => setPendingScheduleDate(null)}
         />
       )}
@@ -415,8 +473,13 @@ export default function App() {
       {activityFormMode !== 'closed' && (
         <ActivityFormModal
           initial={editingActivity}
+          initialTitle={activityFormMode === 'create-for-date' ? createPrefillTitle : undefined}
           onSave={(data) => {
-            if (activityFormMode === 'create') addActivity(data)
+            if (activityFormMode === 'create-for-date') {
+              const id = addActivity(data)
+              if (pendingScheduleDate) addEntry(id, pendingScheduleDate)
+              setPendingScheduleDate(null)
+            } else if (activityFormMode === 'create') addActivity(data)
             else editActivity(activityFormMode, data)
             setActivityFormMode('closed')
           }}

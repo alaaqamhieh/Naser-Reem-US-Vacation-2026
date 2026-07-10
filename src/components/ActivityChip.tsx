@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { ActivityIdea, CalendarEntry } from '../types'
 import { useConfirm } from '../useConfirm'
 import { googleMapsUrl } from '../mapsLink'
+import { formatTime12h } from '../dateUtils'
 
 export function ActivityChip({
   entry,
@@ -48,8 +49,8 @@ export function ActivityChip({
             <div className="chip__details">
               {entry.startTime && (
                 <span className="chip__time">
-                  {entry.startTime}
-                  {entry.endTime ? `–${entry.endTime}` : ''}
+                  {formatTime12h(entry.startTime)}
+                  {entry.endTime ? `–${formatTime12h(entry.endTime)}` : ''}
                 </span>
               )}
               {entry.note && <p className="chip__note">{entry.note}</p>}

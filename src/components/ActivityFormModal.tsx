@@ -15,17 +15,19 @@ const CATEGORY_OPTIONS: { key: ActivityCategory; label: string }[] = [
 
 export function ActivityFormModal({
   initial,
+  initialTitle,
   onSave,
   onClose,
   onDelete,
 }: {
   initial?: ActivityIdea
+  initialTitle?: string
   onSave: (data: { title: string; emoji: string; category: ActivityCategory; description: string }) => void
   onClose: () => void
   onDelete?: () => void
 }) {
   useEscapeToClose(onClose)
-  const [title, setTitle] = useState(initial?.title ?? '')
+  const [title, setTitle] = useState(initial?.title ?? initialTitle ?? '')
   const [emoji, setEmoji] = useState(initial?.emoji ?? '✨')
   const [category, setCategory] = useState<ActivityCategory>(initial?.category ?? 'home')
   const [description, setDescription] = useState(initial?.description ?? '')

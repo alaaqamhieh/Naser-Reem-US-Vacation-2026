@@ -7,11 +7,13 @@ export function ActivityPickerModal({
   date,
   activities,
   onPick,
+  onCreateNew,
   onClose,
 }: {
   date: string
   activities: ActivityIdea[]
   onPick: (activityId: string) => void
+  onCreateNew: (prefillTitle: string) => void
   onClose: () => void
 }) {
   useEscapeToClose(onClose)
@@ -42,6 +44,13 @@ export function ActivityPickerModal({
             </button>
           ))}
         </div>
+        <button
+          type="button"
+          className="activity-picker-list__create"
+          onClick={() => onCreateNew(query.trim())}
+        >
+          + Create {query.trim() ? `“${query.trim()}”` : 'a new idea'}
+        </button>
         <button type="button" className="text-btn" onClick={onClose}>
           Cancel
         </button>
