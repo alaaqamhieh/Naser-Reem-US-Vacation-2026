@@ -9,7 +9,6 @@ export function TimelineView({
   entries,
   activities,
   onRemoveEntry,
-  onToggleCompleted,
   onOpenPicker,
   onEditEntry,
   milestones,
@@ -20,7 +19,6 @@ export function TimelineView({
   entries: CalendarEntry[]
   activities: ActivityIdea[]
   onRemoveEntry: (entryId: string) => void
-  onToggleCompleted: (entryId: string) => void
   onOpenPicker: (date: string) => void
   onEditEntry: (entryId: string) => void
   milestones: Milestone[]
@@ -67,7 +65,6 @@ export function TimelineView({
                   entry={entry}
                   activity={activity}
                   onRemove={() => onRemoveEntry(entry.id)}
-                  onToggleCompleted={() => onToggleCompleted(entry.id)}
                   onEdit={() => onEditEntry(entry.id)}
                 />
               ))}

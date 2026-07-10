@@ -8,32 +8,18 @@ export function ActivityChip({
   entry,
   activity,
   onRemove,
-  onToggleCompleted,
   onEdit,
 }: {
   entry: CalendarEntry
   activity: ActivityIdea
   onRemove: () => void
-  onToggleCompleted: () => void
   onEdit: () => void
 }) {
   const [open, setOpen] = useState(false)
   const { armed, trigger } = useConfirm(onRemove)
 
   return (
-    <div className={`chip chip--${activity.category} ${open ? 'chip--open' : ''} ${entry.completed ? 'chip--completed' : ''}`}>
-      <button
-        type="button"
-        className="chip__done"
-        aria-label={entry.completed ? `Mark ${activity.title} not done` : `Mark ${activity.title} done`}
-        aria-pressed={!!entry.completed}
-        onClick={(e) => {
-          e.stopPropagation()
-          onToggleCompleted()
-        }}
-      >
-        {entry.completed ? '☑' : '☐'}
-      </button>
+    <div className={`chip chip--${activity.category} ${open ? 'chip--open' : ''}`}>
       <button
         type="button"
         className="chip__main"

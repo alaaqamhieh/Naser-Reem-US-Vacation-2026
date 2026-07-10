@@ -105,16 +105,6 @@ export default function App() {
     [updateState],
   )
 
-  const toggleEntryCompleted = useCallback(
-    (entryId: string) => {
-      updateState((prev) => ({
-        ...prev,
-        entries: prev.entries.map((e) => (e.id === entryId ? { ...e, completed: !e.completed } : e)),
-      }))
-    },
-    [updateState],
-  )
-
   const addActivity = useCallback(
     (data: { title: string; emoji: string; category: ActivityCategory; description: string }) => {
       const id = newId('custom')
@@ -372,7 +362,6 @@ export default function App() {
           entries={state.entries}
           activities={state.activities}
           onRemoveEntry={removeEntry}
-          onToggleCompleted={toggleEntryCompleted}
           onOpenPicker={(date) => setPendingScheduleDate(date)}
           onEditEntry={setEditingEntryId}
           onOpenDay={setDayDetailDate}
@@ -400,7 +389,6 @@ export default function App() {
             entries={state.entries}
             activities={state.activities}
             onRemoveEntry={removeEntry}
-            onToggleCompleted={toggleEntryCompleted}
             onOpenPicker={(date) => setPendingScheduleDate(date)}
             onEditEntry={setEditingEntryId}
             milestones={state.milestones}
@@ -507,7 +495,6 @@ export default function App() {
             setDayDetailDate(null)
             setMilestoneFormMode(id)
           }}
-          onToggleCompleted={toggleEntryCompleted}
           onEditEntry={(id) => {
             setDayDetailDate(null)
             setEditingEntryId(id)

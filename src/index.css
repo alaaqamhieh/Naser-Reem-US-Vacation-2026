@@ -460,15 +460,6 @@ a {
 .chip__main:hover {
   background: rgba(0, 0, 0, 0.04);
 }
-.chip__done {
-  background: none;
-  border: none;
-  padding: 6px 2px 6px 6px;
-  font-size: 13px;
-  line-height: 1;
-  color: var(--ink-soft);
-  min-width: 26px;
-}
 .chip__title {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -478,13 +469,6 @@ a {
 }
 .chip--open .chip__title {
   white-space: normal;
-}
-.chip--completed .chip__title {
-  text-decoration: line-through;
-  color: var(--ink-soft);
-}
-.chip--completed {
-  opacity: 0.65;
 }
 .chip__details {
   padding: 0 5px 4px;
@@ -1943,19 +1927,6 @@ a {
 .day-sheet__entry--home { border-left-color: var(--cat-home); }
 .day-sheet__entry--local { border-left-color: var(--cat-local); }
 .day-sheet__entry--event { border-left-color: var(--cat-event); }
-.day-sheet__entry--done {
-  opacity: 0.6;
-}
-.day-sheet__entry--done .day-sheet__entry-title {
-  text-decoration: line-through;
-}
-.day-sheet__done {
-  background: none;
-  border: none;
-  font-size: 17px;
-  padding: 6px;
-  color: var(--ink-soft);
-}
 .day-sheet__entry-body {
   flex: 1;
   min-width: 0;
@@ -2105,7 +2076,6 @@ a {
     font-size: 11px;
   }
   .day-cell .chip__title,
-  .day-cell .chip__done,
   .day-cell .chip__details,
   .day-cell .chip__actions {
     display: none;

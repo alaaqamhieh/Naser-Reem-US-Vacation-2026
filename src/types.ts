@@ -48,8 +48,6 @@ export interface CalendarEntry {
   startTime?: string
   endTime?: string
   note?: string
-  /** Marked once the family has done/enjoyed this — a UI tracking flag only. */
-  completed?: boolean
 }
 
 /** A special date — flights, travel windows, anniversaries. Can span days. */

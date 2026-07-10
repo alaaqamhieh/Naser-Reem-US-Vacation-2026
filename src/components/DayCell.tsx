@@ -9,7 +9,6 @@ export function DayCell({
   entries,
   activities,
   onRemove,
-  onToggleCompleted,
   onOpenPicker,
   onEditEntry,
   onOpenDay,
@@ -21,7 +20,6 @@ export function DayCell({
   entries: { entry: CalendarEntry; isStart: boolean }[]
   activities: ActivityIdea[]
   onRemove: (entryId: string) => void
-  onToggleCompleted: (entryId: string) => void
   onOpenPicker: () => void
   onEditEntry: (entryId: string) => void
   onOpenDay: () => void
@@ -92,7 +90,6 @@ export function DayCell({
               entry={e}
               activity={activity}
               onRemove={() => onRemove(e.id)}
-              onToggleCompleted={() => onToggleCompleted(e.id)}
               onEdit={() => onEditEntry(e.id)}
             />
           )

@@ -8,29 +8,18 @@ import { googleMapsUrl } from '../mapsLink'
 function EntryRow({
   entry,
   activity,
-  onToggleCompleted,
   onEdit,
   onRemove,
 }: {
   entry: CalendarEntry
   activity: ActivityIdea
-  onToggleCompleted: () => void
   onEdit: () => void
   onRemove: () => void
 }) {
   const { armed, trigger } = useConfirm(onRemove)
   const isMultiDay = !!entry.endDate && entry.endDate !== entry.date
   return (
-    <li className={`day-sheet__entry day-sheet__entry--${activity.category} ${entry.completed ? 'day-sheet__entry--done' : ''}`}>
-      <button
-        type="button"
-        className="day-sheet__done"
-        aria-label={entry.completed ? `Mark ${activity.title} not done` : `Mark ${activity.title} done`}
-        aria-pressed={!!entry.completed}
-        onClick={onToggleCompleted}
-      >
-        {entry.completed ? '☑' : '☐'}
-      </button>
+    <li className={`day-sheet__entry day-sheet__entry--${activity.category}`}>
       <div className="day-sheet__entry-body">
         <span className="day-sheet__entry-title">
           <span aria-hidden="true">{activity.emoji}</span> {activity.title}
@@ -88,7 +77,6 @@ export function DayDetailSheet({
   activities,
   milestones,
   onEditMilestone,
-  onToggleCompleted,
   onEditEntry,
   onRemoveEntry,
   onAddActivity,
@@ -99,7 +87,6 @@ export function DayDetailSheet({
   activities: ActivityIdea[]
   milestones: Milestone[]
   onEditMilestone: (milestoneId: string) => void
-  onToggleCompleted: (entryId: string) => void
   onEditEntry: (entryId: string) => void
   onRemoveEntry: (entryId: string) => void
   onAddActivity: () => void
@@ -141,7 +128,6 @@ export function DayDetailSheet({
                   key={e.id}
                   entry={e}
                   activity={activity}
-                  onToggleCompleted={() => onToggleCompleted(e.id)}
                   onEdit={() => onEditEntry(e.id)}
                   onRemove={() => onRemoveEntry(e.id)}
                 />

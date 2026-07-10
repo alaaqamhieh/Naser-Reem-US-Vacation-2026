@@ -11,7 +11,6 @@ export function Calendar({
   entries,
   activities,
   onRemoveEntry,
-  onToggleCompleted,
   onOpenPicker,
   onEditEntry,
   onOpenDay,
@@ -25,7 +24,6 @@ export function Calendar({
   entries: CalendarEntry[]
   activities: ActivityIdea[]
   onRemoveEntry: (entryId: string) => void
-  onToggleCompleted: (entryId: string) => void
   onOpenPicker: (date: string) => void
   onEditEntry: (entryId: string) => void
   onOpenDay: (date: string) => void
@@ -76,7 +74,6 @@ export function Calendar({
                       .map((e) => ({ entry: e, isStart: date === e.date }))}
                     activities={activities}
                     onRemove={onRemoveEntry}
-                    onToggleCompleted={onToggleCompleted}
                     onOpenPicker={() => onOpenPicker(date)}
                     onEditEntry={onEditEntry}
                     onOpenDay={() => onOpenDay(date)}
